@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HomePage</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+<body>
+    <div>
+{#        <form action="/terminal/" method="get">#}
+{#             <input type="text" value="8" id = "mytextbox" name="mytextbox" size="1"/>#}
+{#             <input type="submit" class="btn" value="Click" name="mybtn" onclick="setGetParameter()">#}
+{#        </form>#}
+        <input type="button" id="1" name="button 1" value="button 1" onclick="getTerminalPort(1)">
+        <input type="button" id="2" name="button 2" value="button 2" onclick="getTerminalPort(2)">
+        <input type="button" id="3" name="button 3" value="button 3" onclick="getTerminalPort(3)">
+
+    </div>
+    <div id="id">0</div>
+{#    <div id="counter">not refreshed</div>#}
+    <iframe id="terminal" width="600" height="400"></iframe>
+
+
+    <script>
+        function getTerminalPort(id){
+            document.getElementById("id").innerText=id.toString();
+
+            $.ajax({
+              url: "/terminal/",
+              type: "GET",
+              id: id,
+              success: function(result){
+                  {#console.log(result)#}
+                  {#alert(result);#}
+                  {#alert("Success");#}
+                  {#window.open("http://"+result);#}
+                  {#document.domain="http://"+result;#}
+                  console.log(document.domain);
+                  document.getElementById("terminal").src = "http://"+result;
+                  {#$( "#result" ).load( "ajax/test.html" );#}
+              }
+            });
+        }
+        {#document.getElementById("terminal").onload = function(){#}
+        {# var that = document.getElementById('terminal');#}
+        {##}
+        {##}
+         {#console.log(that.src.domain);#}
+        {##}
+        {# try{#}
+        {#    (that.contentWindow||that.contentDocument).location.href;#}
+        {# }#}
+        {# catch(err){#}
+        {#    //err:SecurityError: Blocked a frame with origin "http://*********" from accessing a cross-origin frame.#}
+        {#    console.log('err:'+err);#}
+            {#if(document.getElementById("counter").innerText==="not refreshed"){#}
+            {#    document.getElementById("counter").innerText="refreshed";#}
+                {#that.src = that.src;#}
+                {#getTerminalPort(parseInt(document.getElementById("id").innerText))#}
+            {#}#}
+        {# }#}
+        {#};#}
+
+        {#function connect() {#}
+        {#  var ws = new WebSocket('ws://localhost:8000');#}
+        {#  ws.onopen = function() {#}
+        {#    // subscribe to some channels#}
+        {#    ws.send(JSON.stringify({#}
+        {#        //.... some message the I must send when I connect ....#}
+        {#    }));#}
+        {#  };#}
+        {##}
+        {#  ws.onmessage = function(e) {#}
+        {#    console.log('Message:', e.data);#}
+        {#  };#}
+        {##}
+        {#  ws.onclose = function(e) {#}
+        {#    console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);#}
+        {#    setTimeout(function() {#}
+        {#      connect();#}
+        {#    }, 1000);#}
+        {#  };#}
+        {##}
+        {#  ws.onerror = function(err) {#}
+        {#    console.error('Socket encountered error: ', err.message, 'Closing socket');#}
+        {#    ws.close();#}
+        {#  };#}
+        {#}#}
+    </script>
+
+</body>
+
+</html>
