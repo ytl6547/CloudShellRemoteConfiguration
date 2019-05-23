@@ -1,17 +1,17 @@
-import logging
 import subprocess
 import socket
 from django.views.generic import TemplateView
 
 from django.http import HttpResponse
+from threading import Timer
 
-logger = logging.getLogger("mylogger")
-# logger.debug("works")
 password = "admin"
 username = "admin"
-client = "40.0.0.10"
+clientIP = "40.0.0.10"
 host = "52.27.82.38"
 port = "8080"
+timeout_sec = "20"
+kill = lambda process: process.kill()
 
 
 def get_open_port():
@@ -23,22 +23,31 @@ def get_open_port():
     return port
 
 
-# @xframe_options_exempt
-
 def terminal(request):
-    # if port == "":
     port = str(get_open_port())
-    # port = "8000"
 
-    id = 0
+    DeviceId = 0
 
     if request.method == "GET":
-        id = request.GET.get('id')
+        DeviceId = request.GET.get('DeviceId')
 
-        pre_entered_command = "ttyd -i 20.0.0.18 -p " + port + " sshpass -p " + password + " ssh " + username + "@" + client
-        # ttyd sshpass -
-        #  " ssh " + username + "@" + host + " && " + password
-        subprocess.Popen(pre_entered_command, shell=True)
+        pre_entered_command = "sshpass -p " + password + " ssh " + username + "@" + clientIP
+
+        command = "timeout " + timeout_sec + " ttyd -i 20.0.0.18 -o -p " + port + " " + pre_entered_command
+        proc = subprocess.Popen(command, shell=True)
+        # try:
+        #     proc.communicate(timeout=5)
+        # except subprocess.TimeoutExpired:
+        #     proc.kill()
+        #     proc.communicate()
+        timer = Timer(3, proc.kill)
+        # timer.start()
+        try:
+            timer.start()
+            proc.communicate()
+        finally:
+            timer.cancel()
+        # proc.kill()
     return HttpResponse(host + ":" +port)
 
 
