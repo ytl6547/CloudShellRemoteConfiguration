@@ -5,13 +5,13 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse
 from threading import Timer
 
-password = "admin"
-username = "admin"
+clientPassword = "admin"
+clientUsername = "admin"
 clientIP = "40.0.0.10"
-host = "52.27.82.38"
-port = "8080"
+hostPublic = "52.27.82.38"
+hostLocal = "20.0.0.18"
+# portToHostTerminal = "8080"
 timeout_sec = "20"
-kill = lambda process: process.kill()
 
 
 def get_open_port():
@@ -24,31 +24,19 @@ def get_open_port():
 
 
 def terminal(request):
-    port = str(get_open_port())
+    portToHostTerminal = str(get_open_port())
 
     DeviceId = 0
 
     if request.method == "GET":
         DeviceId = request.GET.get('DeviceId')
 
-        pre_entered_command = "sshpass -p " + password + " ssh " + username + "@" + clientIP
+        pre_entered_command = "sshpass -p " + clientPassword + " ssh " + clientUsername + "@" + clientIP
 
-        command = "timeout " + timeout_sec + " ttyd -i 20.0.0.18 -o -p " + port + " " + pre_entered_command
-        proc = subprocess.Popen(command, shell=True)
-        # try:
-        #     proc.communicate(timeout=5)
-        # except subprocess.TimeoutExpired:
-        #     proc.kill()
-        #     proc.communicate()
-        timer = Timer(3, proc.kill)
-        # timer.start()
-        try:
-            timer.start()
-            proc.communicate()
-        finally:
-            timer.cancel()
-        # proc.kill()
-    return HttpResponse(host + ":" +port)
+        command = "timeout " + timeout_sec + " ttyd -i " + hostLocal + " -o -p " + portToHostTerminal + " " + pre_entered_command
+        subprocess.Popen(command, shell=True)
+
+    return HttpResponse(hostPublic + ":" + portToHostTerminal)
 
 
 class HomePageView(TemplateView):
