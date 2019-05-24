@@ -26,7 +26,7 @@
               DeviceId: DeviceId,
               success: function(result){
                   console.log(document.domain);
-                  document.getElementById("terminal").src = "http://"+result;
+                  document.getElementById("terminal").src = "http://"+document.domain+":"+result;
               }
             });
         }

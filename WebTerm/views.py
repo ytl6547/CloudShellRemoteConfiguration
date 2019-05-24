@@ -8,7 +8,7 @@ from threading import Timer
 clientPassword = "admin"
 clientUsername = "admin"
 clientIP = "40.0.0.10"
-hostPublic = "pnp-scd-dev03.cisco.com"
+# hostPublic = "pnp-scd-dev03.cisco.com"
 # hostLocal = "172.23.165.87"
 # portToHostTerminal = "8080"
 timeout_sec = "20"
@@ -36,7 +36,7 @@ def terminal(request):
         command = "timeout " + timeout_sec + " ttyd -o -p " + portToHostTerminal + " " + pre_entered_command
         subprocess.Popen(command, shell=True)
 
-    return HttpResponse(hostPublic + ":" + portToHostTerminal)
+    return HttpResponse(portToHostTerminal)
 
 
 class HomePageView(TemplateView):
