@@ -83,7 +83,7 @@ Cloud Shell Remote Configuration is a web application to remotely configure Cisc
     cd CloudShellRemoteConfiguration/
     python3 manage.py runserver 0.0.0.0:80
     
-Then open <http://<publicIP> with a browser.
+Then open http://`<publicIP>` with a browser.
 
 ## Browser Support
 
