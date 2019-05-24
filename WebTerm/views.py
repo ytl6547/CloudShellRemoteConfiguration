@@ -8,8 +8,8 @@ from threading import Timer
 clientPassword = "admin"
 clientUsername = "admin"
 clientIP = "40.0.0.10"
-hostPublic = "52.27.82.38"
-hostLocal = "20.0.0.18"
+hostPublic = "pnp-scd-dev03.cisco.com"
+# hostLocal = "172.23.165.87"
 # portToHostTerminal = "8080"
 timeout_sec = "20"
 
@@ -33,7 +33,7 @@ def terminal(request):
 
         pre_entered_command = "sshpass -p " + clientPassword + " ssh " + clientUsername + "@" + clientIP
 
-        command = "timeout " + timeout_sec + " ttyd -i " + hostLocal + " -o -p " + portToHostTerminal + " " + pre_entered_command
+        command = "timeout " + timeout_sec + " ttyd -o -p " + portToHostTerminal + " " + pre_entered_command
         subprocess.Popen(command, shell=True)
 
     return HttpResponse(hostPublic + ":" + portToHostTerminal)
