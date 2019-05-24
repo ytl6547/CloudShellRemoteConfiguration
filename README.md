@@ -11,7 +11,6 @@ Cloud Shell Remote Configuration is a web application to remotely configure Cisc
 
 ## Install on Linux
 
-    ```bash
     # SSH to cloud vm
 
     # Become root
@@ -71,7 +70,6 @@ Cloud Shell Remote Configuration is a web application to remotely configure Cisc
 
     # Clone Cloud Shell
     git clone https://github.com/ytl6547/CloudShellRemoteConfiguration.git
-    ```
     
 ## Example Usage
     
