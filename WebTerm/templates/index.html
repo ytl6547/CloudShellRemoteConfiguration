@@ -4,12 +4,27 @@
     <meta charset="UTF-8">
     <title>HomePage</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
+
+
+    </style>
 </head>
-<body>
-    <div>
-        <input type="button" id="1" name="button 1" value="button 1" onclick="prepareTerminal(1)">
-        <input type="button" id="2" name="button 2" value="button 2" onclick="prepareTerminal(2)">
-        <input type="button" id="3" name="button 3" value="button 3" onclick="prepareTerminal(3)">
+<body onload="showDropdown()" style="padding: 20px">
+    <div id="inputs" style="width: 600px">
+        <div class="input-group">
+          <input id="text-input" type="text" class="form-control" aria-label="Text input with segmented dropdown button" onkeyup="filter()" value="">
+          <div class="input-group-append">
+            <button id="down-button" type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div id="dropdown-content" class="dropdown-menu float-right" style="width: 600px; overflow-y:scroll; height:400px;">
+            </div>
+          </div>
+        </div>
 
     </div>
     <div id="id">0</div>
@@ -19,16 +34,37 @@
     <script>
         function prepareTerminal(DeviceId){
             document.getElementById("id").innerText=DeviceId.toString();
-
+            document.getElementById("text-input").value=DeviceId.toString();
             $.ajax({
               url: "/terminal/",
               type: "GET",
               DeviceId: DeviceId,
               success: function(result){
-                  console.log(document.domain);
+                  {#console.log(document.domain);#}
                   document.getElementById("terminal").src = "http://"+document.domain+":"+result;
               }
             });
+        }
+        function showDropdown(){
+            document.getElementById("dropdown-content").innerHTML="";
+            for(i=1; i<=20; i++){
+                if(i.toString().includes(document.getElementById("text-input").value)){
+                    document.getElementById("dropdown-content").innerHTML+="<a class=\"dropdown-item\" onclick=\"prepareTerminal("+i+")\">"+i+"</a>";
+                }
+
+            }
+        }
+        function filter(){
+            {#console.log(document.getElementById("text-input").value)#}
+            if(document.getElementById("text-input").value){
+                {#document.getElementById("down-button").dropdown();#}
+                $('#down-button').dropdown('show')
+
+            }
+            else{
+                $('#down-button').dropdown('hide')
+            }
+            showDropdown();
         }
     </script>
 
