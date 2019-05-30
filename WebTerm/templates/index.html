@@ -13,22 +13,24 @@
 
     </style>
 </head>
-<body onload="showDropdown()" style="padding: 20px">
-    <div id="inputs" style="width: 600px">
-        <div class="input-group">
-          <input id="text-input" type="text" class="form-control" aria-label="Text input with segmented dropdown button" onkeyup="filter()" value="">
-          <div class="input-group-append">
-            <button id="down-button" type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <div id="dropdown-content" class="dropdown-menu float-right" style="width: 600px; overflow-y:scroll; height:400px;">
+<body onload="getDevices(); showDropdown();" style="padding: 20px">
+    <div id="container" style="width: 600px;">
+        <div id="inputs" style="width: 600px">
+            <div class="input-group">
+              <input id="text-input" type="text" class="form-control" aria-label="Text input with segmented dropdown button" onkeyup="filter()" value="">
+              <div class="input-group-append">
+                <button id="down-button" type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div id="dropdown-content" class="dropdown-menu" style="width: 600px; overflow-y:scroll; height:400px;">
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
+        </div>
+        <div id="id">0</div>
+        <iframe id="terminal" width="600" height="400"></iframe>
     </div>
-    <div id="id">0</div>
-    <iframe id="terminal" width="600" height="400"></iframe>
 
 
     <script>
@@ -45,9 +47,32 @@
               }
             });
         }
+        function getDevices() {
+            $.ajax({
+              url: "/devices/",
+              type: "GET",
+              success: function(result){
+                  console.log(result);
+              }
+            });
+            {#const Http = new XMLHttpRequest();#}
+            {##}
+            {#const url='https://172.27.250.16/api/system/v1/auth/login';#}
+            {##}
+            {#var username = "admin";#}
+            {#var password = "Maglev123";#}
+            {#Http.open("GET", url);#}
+            {#Http.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password))#}
+            {##}
+            {#Http.send();#}
+            {##}
+            {#Http.onreadystatechange = (e) => {#}
+            {#  console.log(Http.responseText)#}
+            {#}#}
+        }
         function showDropdown(){
             document.getElementById("dropdown-content").innerHTML="";
-            for(i=1; i<=20; i++){
+            for(i=1; i<=100; i++){
                 if(i.toString().includes(document.getElementById("text-input").value)){
                     document.getElementById("dropdown-content").innerHTML+="<a class=\"dropdown-item\" onclick=\"prepareTerminal("+i+")\">"+i+"</a>";
                 }
@@ -59,7 +84,6 @@
             if(document.getElementById("text-input").value){
                 {#document.getElementById("down-button").dropdown();#}
                 $('#down-button').dropdown('show')
-
             }
             else{
                 $('#down-button').dropdown('hide')
