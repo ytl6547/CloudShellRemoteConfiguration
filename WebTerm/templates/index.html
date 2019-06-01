@@ -13,7 +13,7 @@
 
     </style>
 </head>
-<body onload="getDevices(); showDropdown();" style="padding: 20px">
+<body onload="getDevices()" style="padding: 20px">
     <div id="container" style="width: 600px;">
         <div id="inputs" style="width: 600px">
             <div class="input-group">
@@ -34,6 +34,8 @@
 
 
     <script>
+        device_list=[];
+
         function prepareTerminal(DeviceId){
             document.getElementById("id").innerText=DeviceId.toString();
             document.getElementById("text-input").value=DeviceId.toString();
@@ -48,13 +50,26 @@
             });
         }
         function getDevices() {
-            $.ajax({
-              url: "/devices/",
-              type: "GET",
-              success: function(result){
-                  console.log(result);
-              }
-            });
+            console.log("get device");
+            var source = new WebSocket("ws://" + window.location.host + "/ws/devices/");
+            source.onmessage = function(event) {
+              {#document.getElementById("result").innerHTML += event.data + "<br>";#}
+                console.log("received message");
+                console.log(event.data)
+            };
+            source.onerror = function (error) {
+                console.log(error)
+            };
+
+            {#$.ajax({#}
+            {#  url: "/devices/",#}
+            {#  type: "GET",#}
+            {#  success: function(result){#}
+            {#      console.log(result);#}
+            {#      device_list = JSON.parse(result);#}
+            {#      showDropdown();#}
+            {#  }#}
+            {# });#}
             {#const Http = new XMLHttpRequest();#}
             {##}
             {#const url='https://172.27.250.16/api/system/v1/auth/login';#}
@@ -68,7 +83,7 @@
             {##}
             {#Http.onreadystatechange = (e) => {#}
             {#  console.log(Http.responseText)#}
-            {#}#}
+            {# }#}
         }
         function showDropdown(){
             document.getElementById("dropdown-content").innerHTML="";
