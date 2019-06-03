@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'WebTerm',
     'channels',
+    # "channels_presence",
 ]
 
 MIDDLEWARE = [

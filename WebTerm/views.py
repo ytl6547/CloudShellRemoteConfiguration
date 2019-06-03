@@ -77,49 +77,10 @@ def getDevices():
     return json.dumps(device_list)
 
 
-# async def main(websocket, path):
-#     a = getDevices()
-#     await websocket.send(a)
-
-
-# def devices(request):
-#     # global device_list
-#     # if Cookies == {}:
-#     #     login()
-#     #
-#     # r = session.get(check_device_url, cookies=Cookies, verify=False)
-#     # if r.status_code != 200:
-#     #     login()
-#     #     r = session.get(check_device_url, cookies=Cookies, verify=False)
-#     # print(r.text)
-#     # device_list = json.loads(r.text)
-#     # print(device_list)
-#     #
-#     # filtered_device_list = []
-#     # for device in device_list:
-#     #     if device['connectionState']['state'] != "PENDING":
-#     #         filtered_device_list.append(device)
-#     # device_list = filtered_device_list
-#     # # websocket = websockets.connect("ws://127.0.0.1:8000")
-#     # # await websocket.send(json.dumps(device_list))
-#     #
-#     # # return HttpResponse(json.dumps(device_list))
-#     # return Response(json.dumps(device_list), mimetype="text/event-stream")
-#     # asyncio.set_event_loop(asyncio.new_event_loop())
-#     # start_server = websockets.serve(main, 'localhost', 8000)
-#     # asyncio.get_event_loop().run_until_complete(start_server)
-#     # asyncio.get_event_loop().run_forever()
-#     print("devices")
-#     a = getDevices()
-#     # stream = yield a
-#     h = StreamingHttpResponse(a, content_type='text/event-stream')
-#     return h
-
-
 def terminal(request):
     portToHostTerminal = str(get_open_port())
 
-    DeviceId = 0
+    DeviceId = ""
 
     if request.method == "GET":
         DeviceId = request.GET.get('DeviceId')
