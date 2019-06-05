@@ -10,8 +10,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <style>
         body, html {width: 100%; height: 100%; margin: 0; padding: 0}
-        .first-row {position: absolute;top: 0; left: 0; right: 0; height: 100px;}
-        .second-row {position: absolute; top: 100px; left: 0; right: 0; bottom: 0; }
+        .first-row {position: absolute;top: 0; left: 0; right: 0; height: 120px;}
+        .second-row {position: absolute; top: 120px; left: 0; right: 0; bottom: 0; }
         .second-row iframe {display: block; width: 100%; height: 100%; border: none;}
 
     </style>
@@ -19,26 +19,39 @@
 <body onload="getDevices()" style="padding: 20px">
 {#    <div id="container">#}
     <div class="first-row">
-        <div id="inputs" style="width: 500px">
-            <div class="input-group">
-              <input id="text-input" type="text" class="form-control" aria-label="Text input with segmented dropdown button" onkeyup="filter()" value="">
-              <div class="input-group-append">
-                <button id="down-button" type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div id="dropdown-content" class="dropdown-menu" style="width: 600px; overflow-y:scroll; height:400px;">
+        <div class="float-left">
+            <div id="inputs" style="width: 600px">
+                <div class="input-group">
+                  <input id="text-input" type="text" class="form-control" aria-label="Text input with segmented dropdown button" onkeyup="filter()" value="">
+                  <div class="input-group-append">
+                    <button id="down-button" type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div id="dropdown-content" class="dropdown-menu" style="width: 600px; overflow-y:scroll; height:400px;">
+                    </div>
+                    <button id="connect" class="btn btn-outline-secondary" type="button" onclick="prepareTerminal()" disabled>Connect!</button>
+                  </div>
                 </div>
-                <button class="btn btn-outline-secondary" type="button" onclick="prepareTerminal()">Button</button>
-              </div>
-
             </div>
+            <div class="float-left">
+                <div id="id" class="float-left">0</div>
+                <div id="message" class="float-left" style="margin-left: 10px; margin-right: 10px"></div>
+                <div id="countdown" class="float-left"></div>
+            </div>
+
         </div>
-        <div id="id">0</div>
-        <div id="message"></div>
-        <div id="countdown"></div>
+        <form id="form" class="float-right" action="/login/" method="post">
+            {% csrf_token %}
+            <input type="text" class="form-control input-sm" id="exampleInputEmail1" name="username" placeholder="Username">
+
+            <input type="password" class="form-control input-sm" id="exampleInputPassword1" name="password" placeholder="Password">
+
+            <button type="submit" class="btn-sm btn-primary">Submit</button>
+
+        </form>
     </div>
     <div class="second-row">
-        <iframe id="terminal" width="100%" height=""></iframe>
+        <iframe id="terminal"></iframe>
     </div>
 
 {#    </div>#}
@@ -51,7 +64,27 @@
         {#var startTime;#}
         var countdown;
 
+        $('#form').submit(function(){
+            $.ajax({
+              url: $('#form').attr('action'),
+              type: 'POST',
+              data : $('#form').serialize(),
+              success: function(result){
+                console.log(result);
+                if(result==="True"){
+                    $('#connect').prop("disabled", false)
+                }
+                else{
+                    $('#connect').prop("disabled", true)
+                }
+              }
+            });
+            return false;
+        });
         function prepareTerminal(){
+            {#if(!loginSuccessful){#}
+            {##}
+            {# }#}
             $.ajax({
               url: "/terminal/",
               type: "GET",
@@ -62,15 +95,15 @@
 
                   clearInterval(countdown);
                   if(result.pending===true){
-                      document.getElementById("message").innerText="The status of this port is PENDING";
+                      document.getElementById("message").innerText=" The status of this port is PENDING";
                   }
                   else{
                       if(result.port!=null){
-                          document.getElementById("terminal").src = "http://"+document.domain+":"+result.port;
-                          document.getElementById("message").innerText="Your session will expire after ";
+                          document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;
+                          document.getElementById("message").innerText=" Your session will expire after ";
                       }
                       else{
-                          document.getElementById("message").innerText="Currently using by others. Wait ";
+                          document.getElementById("message").innerText=" Currently using by others. Wait ";
                       }
                       startCountDown(result.lastAccessTime);
                   }
@@ -129,8 +162,8 @@
 
               // Find the distance between now and the count down date
               var distance = 1200000 - (now - Date.parse(last_access_time));
-              console.log(now, Date.parse(last_access_time));
-              console.log(distance);
+              {#console.log(now, Date.parse(last_access_time));#}
+              {#console.log(distance);#}
 
               // Time calculations for hours, minutes and seconds
               var hours = Math.floor(distance / (1000 * 60 * 60));
@@ -143,7 +176,7 @@
 
               // If the count down is finished, write some text
               if (distance < 0) {
-                clearInterval(x);
+                clearInterval(countdown);
                 document.getElementById("countdown").innerHTML = "EXPIRED";
               }
             }, 1000);

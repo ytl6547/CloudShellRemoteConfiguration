@@ -53,22 +53,25 @@ def parse_dict_cookies(value):
     return result
 
 
-def login():
+def loginToDNAC():
     global Cookies
     response = session.get(login_url, auth=(username, password), verify=False)
+    if response.status_code != 200:
+        return False
 
     Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
+    return True
 
 
 def getDevices():
-    print("get devices")
+    # print("get devices")
     global device_list
     if Cookies == {}:
-        login()
+        loginToDNAC()
 
     r = session.get(check_device_url, cookies=Cookies, verify=False)
     if r.status_code != 200:
-        login()
+        loginToDNAC()
         r = session.get(check_device_url, cookies=Cookies, verify=False)
     # print(r.text)
     device_list = json.loads(r.text)
@@ -82,6 +85,13 @@ def getDevices():
     return json.dumps(device_list)
 
 
+def login(request):
+    global username, password
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    # print(username, password)
+    return HttpResponse(loginToDNAC())
+
 class ReturnValue():
     def __init__(self, pending=True, last_access_time=None, port=None):
         self.port = port
@@ -92,14 +102,23 @@ class ReturnValue():
 def terminal(request):
     DeviceId = request.GET.get('DeviceId', "")
 
+    # check whether device status is PENDING
+    # getDevices()
+    # for device in device_list:
+    #     if device["deviceId"] == DeviceId:
+    #         if device["connectionState"]["state"] == "PENDING":
+    #             return HttpResponse(json.dumps(ReturnValue().__dict__, cls=DjangoJSONEncoder),
+    #                                 content_type="application/json")
+    #         break
+
     # Query the database
     try:
         d = Device.objects.get(id=DeviceId)
-        print(d.id)
-        print(d.lastAccessTime)
+        # print(d.id)
+        # print(d.lastAccessTime)
         if (datetime.now(timezone.utc) - d.lastAccessTime).total_seconds() < 1200:  # using by others
             # return not pending and the access time of others
-            print((datetime.now(timezone.utc) - d.lastAccessTime).total_seconds())
+            # print((datetime.now(timezone.utc) - d.lastAccessTime).total_seconds())
             return HttpResponse(json.dumps(ReturnValue(False, d.lastAccessTime).__dict__, cls=DjangoJSONEncoder),
                                 content_type="application/json")
     except Device.DoesNotExist:  # not accessed by any one
@@ -109,14 +128,7 @@ def terminal(request):
     else:
         d = Device(id=DeviceId)
 
-    # check whether device status is PENDING
-    # getDevices()
-    # for device in device_list:
-    #     if device["deviceId"] == DeviceId:
-    #         if device["connectionState"]["state"] == "PENDING":
-    #             return HttpResponse(json.dumps(ReturnValue().__dict__, cls=DjangoJSONEncoder),
-    #                                 content_type="application/json")
-    #         break
+
 
     # get the password
 
@@ -130,7 +142,7 @@ def terminal(request):
 
     # do it!
     # subprocess.Popen(command, shell=True)
-    subprocess.Popen("ttyd -o -p " + port_to_host_terminal, shell=True)
+    subprocess.Popen("timeout " + timeout_sec + " ttyd -o -p " + port_to_host_terminal +" bash", shell=True)
     d.save()
     # print(json.dumps(ReturnValue(False, d.lastAccessTime, port_to_host_terminal), default=lambda o: o.__str__()))
 

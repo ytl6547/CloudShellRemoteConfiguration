@@ -2,6 +2,8 @@ from channels.generic.websocket import WebsocketConsumer
 import json
 import time
 from WebTerm import views
+
+
 # from django.dispatch import receiver
 #
 # from channels_presence.signals import presence_changed
@@ -12,7 +14,11 @@ class DeviceListUpdateConsumer(WebsocketConsumer):
     def checkDNACUpdate(self):
         while self.connected:
             print(self.connected)
-            self.send(views.getDevices())
+            try:
+                self.send(views.getDevices())
+            except:
+                break
+
             time.sleep(300)
 
     def connect(self):
