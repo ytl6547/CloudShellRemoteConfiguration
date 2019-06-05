@@ -12,10 +12,7 @@ class DeviceListUpdateConsumer(WebsocketConsumer):
     def checkDNACUpdate(self):
         while self.connected:
             print(self.connected)
-            try:
-                self.send(views.getDevices())
-            except:
-                self.connected = False
+            self.send(views.getDevices())
             time.sleep(300)
 
     def connect(self):

@@ -9,13 +9,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <style>
-
+        body, html {width: 100%; height: 100%; margin: 0; padding: 0}
+        .first-row {position: absolute;top: 0; left: 0; right: 0; height: 100px;}
+        .second-row {position: absolute; top: 100px; left: 0; right: 0; bottom: 0; }
+        .second-row iframe {display: block; width: 100%; height: 100%; border: none;}
 
     </style>
 </head>
 <body onload="getDevices()" style="padding: 20px">
-    <div id="container" style="width: 600px;">
-        <div id="inputs" style="width: 600px">
+{#    <div id="container">#}
+    <div class="first-row">
+        <div id="inputs" style="width: 500px">
             <div class="input-group">
               <input id="text-input" type="text" class="form-control" aria-label="Text input with segmented dropdown button" onkeyup="filter()" value="">
               <div class="input-group-append">
@@ -24,82 +28,83 @@
                 </button>
                 <div id="dropdown-content" class="dropdown-menu" style="width: 600px; overflow-y:scroll; height:400px;">
                 </div>
+                <button class="btn btn-outline-secondary" type="button" onclick="prepareTerminal()">Button</button>
               </div>
-            </div>
 
+            </div>
         </div>
         <div id="id">0</div>
-        <iframe id="terminal" width="600" height="400"></iframe>
+        <div id="message"></div>
+        <div id="countdown"></div>
     </div>
+    <div class="second-row">
+        <iframe id="terminal" width="100%" height=""></iframe>
+    </div>
+
+{#    </div>#}
 
 
     <script>
         var device_list=[];
+        var CurrDeviceId;
+        var CurrDeviceName;
+        {#var startTime;#}
+        var countdown;
 
-        function prepareTerminal(DeviceId, DeviceName){
-            document.getElementById("id").innerText=DeviceName;
-            document.getElementById("text-input").value=DeviceName;
+        function prepareTerminal(){
             $.ajax({
               url: "/terminal/",
               type: "GET",
-              DeviceId: DeviceId,
+              data:{DeviceId: CurrDeviceId},
               success: function(result){
                   {#console.log(document.domain);#}
-                  document.getElementById("terminal").src = "http://"+document.domain+":"+result;
+                  console.log(result);
+
+                  clearInterval(countdown);
+                  if(result.pending===true){
+                      document.getElementById("message").innerText="The status of this port is PENDING";
+                  }
+                  else{
+                      if(result.port!=null){
+                          document.getElementById("terminal").src = "http://"+document.domain+":"+result.port;
+                          document.getElementById("message").innerText="Your session will expire after ";
+                      }
+                      else{
+                          document.getElementById("message").innerText="Currently using by others. Wait ";
+                      }
+                      startCountDown(result.lastAccessTime);
+                  }
+
               }
             });
+        }
+        function selectDevice(DeviceId, DeviceName){
+            CurrDeviceId = DeviceId;
+            CurrDeviceName = DeviceName;
+            console.log(DeviceId);
+            document.getElementById("id").innerText=DeviceName;
+            document.getElementById("text-input").value=DeviceName;
         }
         function getDevices() {
             console.log("get device");
             var source = new WebSocket("ws://" + window.location.host + "/ws/devices/");
             source.onmessage = function(event) {
-              {#document.getElementById("result").innerHTML += event.data + "<br>";#}
                 console.log("received message");
-                {#console.log(event.data);#}
                 device_list = JSON.parse(event.data);
-                {#for(i=0; i<devices.length; i++){#}
-                {#    console.log(devices[i]);#}
-                {# }#}
-
-                {#devices = JSON.parse(event);#}
-                {#console.log(device_list)#}
+                console.log(device_list);
                 showDropdown();
             };
             source.onerror = function (error) {
                 console.log(error)
             };
-
-            {#$.ajax({#}
-            {#  url: "/devices/",#}
-            {#  type: "GET",#}
-            {#  success: function(result){#}
-            {#      console.log(result);#}
-            {#      device_list = JSON.parse(result);#}
-            {#      showDropdown();#}
-            {#  }#}
-            {# });#}
-            {#const Http = new XMLHttpRequest();#}
-            {##}
-            {#const url='https://172.27.250.16/api/system/v1/auth/login';#}
-            {##}
-            {#var username = "admin";#}
-            {#var password = "Maglev123";#}
-            {#Http.open("GET", url);#}
-            {#Http.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password))#}
-            {##}
-            {#Http.send();#}
-            {##}
-            {#Http.onreadystatechange = (e) => {#}
-            {#  console.log(Http.responseText)#}
-            {# }#}
         }
         function showDropdown(){
             document.getElementById("dropdown-content").innerHTML="";
             {#console.log(device_list);#}
             for(i=0; i<device_list.length; i++){
-                console.log(device_list[i]);
+                {#console.log(device_list[i]);#}
                 if(device_list[i].name.includes(document.getElementById("text-input").value)){
-                    document.getElementById("dropdown-content").innerHTML+="<a class=\"dropdown-item\" onclick=\"prepareTerminal('"+device_list[i].deviceId+"','"+device_list[i].name+"')\">"+device_list[i].name+"</a>";
+                    document.getElementById("dropdown-content").innerHTML+="<a class=\"dropdown-item\" onclick=\"selectDevice('"+device_list[i].deviceId+"','"+device_list[i].name+"')\">"+device_list[i].name+"</a>";
                 }
 
             }
@@ -114,6 +119,34 @@
                 $('#down-button').dropdown('hide')
             }
             showDropdown();
+        }
+        
+        function startCountDown(last_access_time) {
+            countdown = setInterval(function() {
+
+              // Get today's date and time
+              var now = new Date().getTime();
+
+              // Find the distance between now and the count down date
+              var distance = 1200000 - (now - Date.parse(last_access_time));
+              console.log(now, Date.parse(last_access_time));
+              console.log(distance);
+
+              // Time calculations for hours, minutes and seconds
+              var hours = Math.floor(distance / (1000 * 60 * 60));
+              var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+              var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+              // Display the result in the element with id="demo"
+              document.getElementById("countdown").innerHTML = hours + "h "
+              + minutes + "m " + seconds + "s ";
+
+              // If the count down is finished, write some text
+              if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = "EXPIRED";
+              }
+            }, 1000);
         }
     </script>
 
