@@ -21,13 +21,22 @@ device_list = []
 
 login_url = "https://172.27.250.16/api/system/v1/auth/login"
 check_device_url = "https://172.27.250.16/api/rdm/v1/device"
-username = 'admin'
-password = 'Maglev123'
+username = ''
+password = ''
+CORRECT_USERNAME = 'admin'
+CORRECT_PASSWORD = 'Maglev123'
 
 clientPassword = "admin"
 clientUsername = "admin"
 clientIP = "40.0.0.10"
 timeout_sec = "20"
+
+logged_in = False
+
+# proxies = {
+#   'http': 'http://172.23.165.87:80',
+#   'https': 'https://172.23.165.87:80',
+# }
 
 
 def get_open_port():
@@ -54,17 +63,27 @@ def parse_dict_cookies(value):
 
 
 def loginToDNAC():
+    print("login to DNAC")
     global Cookies
+    global logged_in
     response = session.get(login_url, auth=(username, password), verify=False)
+    print(response.status_code)
     if response.status_code != 200:
+        print("login failed")
+        response = session.get(login_url, auth=(CORRECT_USERNAME, CORRECT_PASSWORD), verify=False)
+        Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
+        logged_in = False
+        print(logged_in)
         return False
 
     Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
+    logged_in = True
+    print(logged_in)
     return True
 
 
 def getDevices():
-    # print("get devices")
+    print("get devices")
     global device_list
     if Cookies == {}:
         loginToDNAC()
@@ -73,9 +92,9 @@ def getDevices():
     if r.status_code != 200:
         loginToDNAC()
         r = session.get(check_device_url, cookies=Cookies, verify=False)
-    # print(r.text)
+    print(r.status_code)
     device_list = json.loads(r.text)
-    # print(device_list)
+    print(device_list)
 
     filtered_device_list = []
     for device in device_list:
@@ -89,17 +108,23 @@ def login(request):
     global username, password
     username = request.POST.get("username")
     password = request.POST.get("password")
-    # print(username, password)
+    print(username, password)
     return HttpResponse(loginToDNAC())
 
 class ReturnValue():
-    def __init__(self, pending=True, last_access_time=None, port=None):
+    def __init__(self, pending=True, last_access_time=None, port=None, authenticated=True):
         self.port = port
         self.lastAccessTime = last_access_time
         self.pending = pending
+        self.authenticated = authenticated
 
 
 def terminal(request):
+    if not logged_in:
+        r = ReturnValue()
+        r.authenticated = False
+        return HttpResponse(json.dumps(r.__dict__, cls=DjangoJSONEncoder), content_type="application/json")
+
     DeviceId = request.GET.get('DeviceId', "")
 
     # check whether device status is PENDING
@@ -121,8 +146,8 @@ def terminal(request):
             # print((datetime.now(timezone.utc) - d.lastAccessTime).total_seconds())
             return HttpResponse(json.dumps(ReturnValue(False, d.lastAccessTime).__dict__, cls=DjangoJSONEncoder),
                                 content_type="application/json")
-    except Device.DoesNotExist:  # not accessed by any one
-        d = Device(id=DeviceId)
+    # except Device.DoesNotExist:  # not accessed by any one
+    #     d = Device(id=DeviceId)
     except:
         d = Device(id=DeviceId)
     else:

@@ -67,6 +67,21 @@ Cloud Shell Remote Configuration is a web application to remotely configure Cisc
     # Install Django
     pip3 install Django
     django-admin --version
+    
+    # Install Django Channels
+    pip3 install -U channels
+    
+    # Install Paramiko
+    pip3 install paramiko
+    
+    # Install requests
+    pip3 install requests
+    
+    #install and configure redis
+    https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-16-04
+    
+    #start redis
+    sudo systemctl start redis
 
     # Clone Cloud Shell
     git clone https://github.com/ytl6547/CloudShellRemoteConfiguration.git
@@ -79,7 +94,7 @@ Cloud Shell Remote Configuration is a web application to remotely configure Cisc
     cd CloudShellRemoteConfiguration/
     python3 manage.py runserver 0.0.0.0:80
     
-Then open http://`<publicIP>` with a browser.
+Then open `http://<publicIP>` with a browser.
 
 ## Browser Support
 
