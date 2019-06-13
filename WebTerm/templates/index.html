@@ -77,8 +77,9 @@
         };
 
         function disconnect() {
-            document.getElementById("terminal").src=""
+            document.getElementById("terminal").src="";
             clearDevice();
+            connected = false;
         }
 
         function clearDevice(){
@@ -89,7 +90,6 @@
                 success: function (result) {
                     if(result==="True"){
                         alert("Successfully removed device from database");
-                        connected = false;
                     }
                     else{
                         alert("Failed to remove device from database");
