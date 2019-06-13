@@ -30,6 +30,7 @@
                     <div id="dropdown-content" class="dropdown-menu" style="width: 600px; overflow-y:scroll; height:400px;">
                     </div>
                     <button id="connect" class="btn btn-outline-secondary" type="button" onclick="prepareTerminal()" disabled>Connect!</button>
+                    <button id="disconnect" class="btn btn-outline-secondary" type="button" onclick="disconnect()">Disconnect!</button>
                   </div>
                 </div>
             </div>
@@ -46,7 +47,7 @@
 
             <input type="password" class="form-control input-sm" id="exampleInputPassword1" name="password" placeholder="Password">
 
-            <button type="submit" class="btn-sm btn-primary">Submit</button>
+            <button type="submit" class="btn-sm btn-secondary">Submit</button>
 
         </form>
     </div>
@@ -61,8 +62,42 @@
         var device_list=[];
         var CurrDeviceId;
         var CurrDeviceName;
+        var ConnectedDeviceId;
+        var ConnectedDeviceName;
         {#var startTime;#}
         var countdown;
+        var connected;
+
+        window.onunload = window.onbeforeunload = function(){
+            if(connected){
+                clearDevice();
+                connected=false;
+            }
+            return null;
+        };
+
+        function disconnect() {
+            document.getElementById("terminal").src=""
+            clearDevice();
+        }
+
+        function clearDevice(){
+            $.ajax({
+                url: "/remove/",
+                type: "GET",
+                data: {DeviceId: ConnectedDeviceId},
+                success: function (result) {
+                    if(result==="True"){
+                        alert("Successfully removed device from database");
+                        connected = false;
+                    }
+                    else{
+                        alert("Failed to remove device from database");
+                    }
+                }
+            });
+            console.log('Cleared');
+        }
 
         $('#form').submit(function(){
             $.ajax({
@@ -70,11 +105,12 @@
               type: 'POST',
               data : $('#form').serialize(),
               success: function(result){
-                console.log(result);
+                {#console.log(result);#}
                 if(result==="True"){
                     $('#connect').prop("disabled", false)
                 }
                 else{
+                    alert("Wrong username or password");
                     $('#connect').prop("disabled", true)
                 }
               }
@@ -104,6 +140,16 @@
                       if(result.port!=null){
                           document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;
                           document.getElementById("message").innerText=" Your session will expire after ";
+                          if(connected){
+                              clearDevice();
+                          }
+                          else{
+                              connected = true;
+                          }
+                          ConnectedDeviceId = CurrDeviceId;
+                          ConnectedDeviceName = CurrDeviceName;
+                          document.getElementById("id").innerText = ConnectedDeviceName;
+
                       }
                       else{
                           document.getElementById("message").innerText=" Currently using by others. Wait ";
@@ -118,11 +164,11 @@
             CurrDeviceId = DeviceId;
             CurrDeviceName = DeviceName;
             console.log(DeviceId);
-            document.getElementById("id").innerText=DeviceName;
             document.getElementById("text-input").value=DeviceName;
         }
         function getDevices() {
             console.log("get device");
+            connected = false;
             var source = new WebSocket("ws://" + window.location.host + "/ws/devices/");
             source.onmessage = function(event) {
                 console.log("received message");
@@ -165,7 +211,7 @@
 
               // Find the distance between now and the count down date
               var distance = 1200000 - (now - Date.parse(last_access_time));
-              {#console.log(now, Date.parse(last_access_time));#}
+              {#console.log(now.toString(), Date.parse(last_access_time).toString());#}
               {#console.log(distance);#}
 
               // Time calculations for hours, minutes and seconds
@@ -181,6 +227,7 @@
               if (distance < 0) {
                 clearInterval(countdown);
                 document.getElementById("countdown").innerHTML = "EXPIRED";
+                connected = false;
               }
             }, 1000);
         }

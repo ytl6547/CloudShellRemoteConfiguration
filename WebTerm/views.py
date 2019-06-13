@@ -29,13 +29,13 @@ CORRECT_PASSWORD = 'Maglev123'
 clientPassword = "admin"
 clientUsername = "admin"
 clientIP = "40.0.0.10"
-timeout_sec = "20"
+timeout_sec = "1200"
 
 logged_in = False
 
 # proxies = {
-#   'http': 'http://172.23.165.87:80',
-#   'https': 'https://172.23.165.87:80',
+#   'http': 'http://172.27.250.16:443',
+#   'https': 'http://172.27.250.16:443'
 # }
 
 
@@ -98,7 +98,7 @@ def getDevices():
 
     filtered_device_list = []
     for device in device_list:
-        if device['connectionState']['state'] == "PENDING":
+        if device['connectionState']['state'] == "CONNECTED":
             filtered_device_list.append(device)
     device_list = filtered_device_list
     return json.dumps(device_list)
@@ -139,19 +139,21 @@ def terminal(request):
     # Query the database
     try:
         d = Device.objects.get(id=DeviceId)
-        # print(d.id)
-        # print(d.lastAccessTime)
+        print(d.id)
+        print(d.lastAccessTime)
         if (datetime.now(timezone.utc) - d.lastAccessTime).total_seconds() < 1200:  # using by others
             # return not pending and the access time of others
             # print((datetime.now(timezone.utc) - d.lastAccessTime).total_seconds())
+            print("now:", datetime.now(timezone.utc))
+            print("last: ", d.lastAccessTime)
             return HttpResponse(json.dumps(ReturnValue(False, d.lastAccessTime).__dict__, cls=DjangoJSONEncoder),
                                 content_type="application/json")
     # except Device.DoesNotExist:  # not accessed by any one
     #     d = Device(id=DeviceId)
     except:
         d = Device(id=DeviceId)
-    else:
-        d = Device(id=DeviceId)
+    # else:
+    #     d = Device(id=DeviceId)
 
 
 
@@ -167,7 +169,8 @@ def terminal(request):
 
     # do it!
     # subprocess.Popen(command, shell=True)
-    subprocess.Popen("timeout " + timeout_sec + " ttyd -o -p " + port_to_host_terminal +" bash", shell=True)
+    # port_to_host_terminal = "8080"
+    subprocess.Popen("ttyd -o -p " + port_to_host_terminal + " bash", shell=True)
     d.save()
     # print(json.dumps(ReturnValue(False, d.lastAccessTime, port_to_host_terminal), default=lambda o: o.__str__()))
 
@@ -175,6 +178,14 @@ def terminal(request):
         json.dumps(ReturnValue(False, d.lastAccessTime, port_to_host_terminal).__dict__, cls=DjangoJSONEncoder),
         content_type="application/json")
 
+def removeDevice(request):
+    DeviceId = request.GET.get('DeviceId', "")
+    try:
+        Device.objects.get(id=DeviceId).delete()
+    except:
+        return HttpResponse(False)
+
+    return HttpResponse(True)
 
 class HomePageView(TemplateView):
     template_name = "index.html"
