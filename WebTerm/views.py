@@ -71,12 +71,15 @@ def loginToDNAC():
     if response.status_code != 200:
         print("login failed")
         response = session.get(login_url, auth=(CORRECT_USERNAME, CORRECT_PASSWORD), verify=False)
+
         Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
+        print(Cookies)
         logged_in = False
         print(logged_in)
         return False
 
     Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
+    print(Cookies)
     logged_in = True
     print(logged_in)
     return True
@@ -96,11 +99,11 @@ def getDevices():
     device_list = json.loads(r.text)
     print(device_list)
 
-    filtered_device_list = []
-    for device in device_list:
-        if device['connectionState']['state'] == "CONNECTED":
-            filtered_device_list.append(device)
-    device_list = filtered_device_list
+    # filtered_device_list = []
+    # for device in device_list:
+    #     if device['connectionState']['state'] == "CONNECTED":
+    #         filtered_device_list.append(device)
+    # device_list = filtered_device_list
     return json.dumps(device_list)
 
 

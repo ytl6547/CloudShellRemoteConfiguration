@@ -17,7 +17,6 @@
     </style>
 </head>
 <body onload="getDevices()" style="padding: 20px">
-{#    <div id="container">#}
     <div class="first-row">
         <div class="float-left">
             <div id="inputs" style="width: 600px">
@@ -55,8 +54,6 @@
         <iframe id="terminal"></iframe>
     </div>
 
-{#    </div>#}
-
 
     <script>
         var device_list=[];
@@ -75,11 +72,26 @@
             }
             return null;
         };
-
+        function terminalOnLoad() {
+            console.log(document.getElementById("terminal").src);
+        }
+        document.getElementById('terminal').onload = () => {
+            {#console.log(document.getElementById("terminal").src);#}
+            {#console.log(window.location);#}
+            {#console.log(connected);#}
+            {#terminalOnLoad();#}
+            if(connected && document.getElementById("terminal").src===window.location.href){
+                clearDevice();
+                clearInterval(countdown);
+                document.getElementById("message").innerText="";
+                document.getElementById("countdown").innerText="";
+                connected = false;
+            }
+        };
         function disconnect() {
-            document.getElementById("terminal").src="";
-            clearDevice();
-            connected = false;
+            if(connected){
+                document.getElementById("terminal").src="";
+            }
         }
 
         function clearDevice(){
