@@ -19,19 +19,22 @@ session = requests.Session()
 Cookies = {}
 device_list = []
 
-login_url = "https://172.27.250.16/api/system/v1/auth/login"
-check_device_url = "https://172.27.250.16/api/rdm/v1/device"
+# login_url = "https://172.27.250.16/api/system/v1/auth/login"
+# check_device_url = "https://172.27.250.16/api/rdm/v1/device"
+login_url = "https://172.23.165.148/api/system/v1/auth/login"
+check_device_url = "https://172.23.165.148/api/rdm/v1/device"
 username = ''
 password = ''
 CORRECT_USERNAME = 'admin'
 CORRECT_PASSWORD = 'Maglev123'
 
-clientPassword = "admin"
-clientUsername = "admin"
+clientPassword = "Cisco"
+clientUsername = "Cisco"
 clientIP = "40.0.0.10"
 timeout_sec = "1200"
 
 logged_in = False
+
 
 # proxies = {
 #   'http': 'http://172.27.250.16:443',
@@ -99,11 +102,11 @@ def getDevices():
     device_list = json.loads(r.text)
     print(device_list)
 
-    # filtered_device_list = []
-    # for device in device_list:
-    #     if device['connectionState']['state'] == "CONNECTED":
-    #         filtered_device_list.append(device)
-    # device_list = filtered_device_list
+    filtered_device_list = []
+    for device in device_list:
+        if device['connectionState']['state'] == "CONNECTED":
+            filtered_device_list.append(device)
+    device_list = filtered_device_list
     return json.dumps(device_list)
 
 
@@ -114,6 +117,7 @@ def login(request):
     print(username, password)
     return HttpResponse(loginToDNAC())
 
+
 class ReturnValue():
     def __init__(self, pending=True, last_access_time=None, port=None, authenticated=True):
         self.port = port
@@ -123,6 +127,7 @@ class ReturnValue():
 
 
 def terminal(request):
+    global clientIP
     if not logged_in:
         r = ReturnValue()
         r.authenticated = False
@@ -131,13 +136,14 @@ def terminal(request):
     DeviceId = request.GET.get('DeviceId', "")
 
     # check whether device status is PENDING
-    # getDevices()
-    # for device in device_list:
-    #     if device["deviceId"] == DeviceId:
-    #         if device["connectionState"]["state"] == "PENDING":
-    #             return HttpResponse(json.dumps(ReturnValue().__dict__, cls=DjangoJSONEncoder),
-    #                                 content_type="application/json")
-    #         break
+    getDevices()
+    for device in device_list:
+        if device["deviceId"] == DeviceId:
+            if device["connectionState"]["state"] == "PENDING":
+                return HttpResponse(json.dumps(ReturnValue().__dict__, cls=DjangoJSONEncoder),
+                                    content_type="application/json")
+            clientIP = device["ipAddr"]
+            break
 
     # Query the database
     try:
@@ -158,8 +164,6 @@ def terminal(request):
     # else:
     #     d = Device(id=DeviceId)
 
-
-
     # get the password
 
     # prepare commands and ports
@@ -171,15 +175,16 @@ def terminal(request):
     d.lastAccessTime = datetime.now(timezone.utc)
 
     # do it!
-    # subprocess.Popen(command, shell=True)
+    subprocess.Popen(command, shell=True)
     # port_to_host_terminal = "8080"
-    subprocess.Popen("ttyd -o -p " + port_to_host_terminal + " bash", shell=True)
+    # subprocess.Popen("ttyd -o -p " + port_to_host_terminal + " " + "bash", shell=True)
     d.save()
     # print(json.dumps(ReturnValue(False, d.lastAccessTime, port_to_host_terminal), default=lambda o: o.__str__()))
 
     return HttpResponse(
         json.dumps(ReturnValue(False, d.lastAccessTime, port_to_host_terminal).__dict__, cls=DjangoJSONEncoder),
         content_type="application/json")
+
 
 def removeDevice(request):
     DeviceId = request.GET.get('DeviceId', "")
@@ -189,6 +194,7 @@ def removeDevice(request):
         return HttpResponse(False)
 
     return HttpResponse(True)
+
 
 class HomePageView(TemplateView):
     template_name = "index.html"
