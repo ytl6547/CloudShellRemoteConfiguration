@@ -130,9 +130,14 @@
             return false;
         });
         function prepareTerminal(){
-            {#if(!loginSuccessful){#}
-            {##}
-            {# }#}
+            if(connected){
+                {#clearDevice();#}
+                {#connected=false;#}
+                disconnect()
+            }
+            if(connected){
+                return
+            }
             $.ajax({
               url: "/terminal/",
               type: "GET",
@@ -152,12 +157,12 @@
                       if(result.port!=null){
                           document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;
                           document.getElementById("message").innerText=" Your session will expire after ";
-                          if(connected){
-                              clearDevice();
-                          }
-                          else{
-                              connected = true;
-                          }
+                          {#if(connected){#}
+                          {#    clearDevice();#}
+                          {# }#}
+                          {#else{#}
+                          connected = true;
+                          {# }#}
                           ConnectedDeviceId = CurrDeviceId;
                           ConnectedDeviceName = CurrDeviceName;
                           document.getElementById("id").innerText = ConnectedDeviceName;
