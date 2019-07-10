@@ -165,6 +165,7 @@ def terminal(request):
 
     # prepare commands and ports
     port_to_host_terminal = str(get_open_port())
+    port_to_host_terminal = "11112"
     pre_entered_command = "sshpass -p " + clientPassword + " ssh " + clientUsername + "@" + clientIP
     command = "timeout " + timeout_sec + " ttyd -o -p " + port_to_host_terminal + " " + pre_entered_command
 
@@ -173,7 +174,7 @@ def terminal(request):
 
     # do it!
     subprocess.Popen(command, shell=True)
-    # port_to_host_terminal = "8080"
+    port_to_host_terminal = "28867"
     # subprocess.Popen("ttyd -o -p " + port_to_host_terminal + " " + "bash", shell=True)
     d.save()
     # print(json.dumps(ReturnValue(False, d.lastAccessTime, port_to_host_terminal), default=lambda o: o.__str__()))
