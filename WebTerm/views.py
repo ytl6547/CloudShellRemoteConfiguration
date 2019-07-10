@@ -21,8 +21,8 @@ device_list = []
 
 # login_url = "https://172.27.250.16/api/system/v1/auth/login"
 # check_device_url = "https://172.27.250.16/api/rdm/v1/device"
-login_url = "https://172.23.165.148/api/system/v1/auth/login"
-check_device_url = "https://172.23.165.148/api/rdm/v1/device"
+login_url = "https://172.23.165.132/api/system/v1/auth/login"
+check_device_url = "https://172.23.165.132/api/rdm/v1/device"
 username = ''
 password = ''
 CORRECT_USERNAME = 'admin'
@@ -36,10 +36,7 @@ timeout_sec = "1200"
 logged_in = False
 
 
-# proxies = {
-#   'http': 'http://172.27.250.16:443',
-#   'https': 'http://172.27.250.16:443'
-# }
+
 
 
 def get_open_port():
