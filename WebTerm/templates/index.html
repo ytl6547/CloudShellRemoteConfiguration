@@ -80,7 +80,7 @@
             {#console.log(window.location);#}
             {#console.log(connected);#}
             {#terminalOnLoad();#}
-            if(connected && document.getElementById("terminal").src===window.location.href){
+            if(connected && document.getElementById("terminal").src === window.location.href){
                 clearDevice();
                 clearInterval(countdown);
                 document.getElementById("message").innerText="";
@@ -131,13 +131,14 @@
         });
         function prepareTerminal(){
             if(connected){
-                {#clearDevice();#}
-                {#connected=false;#}
-                disconnect()
+                {#disconnect()#}
+                alert("Please disconnect first");
+                disconnect();
+                return;
             }
-            if(connected){
-                return
-            }
+            {#if(connected){#}
+            {#    return#}
+            {# }#}
             $.ajax({
               url: "/terminal/",
               type: "GET",
