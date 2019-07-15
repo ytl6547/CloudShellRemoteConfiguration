@@ -1,9 +1,10 @@
 import subprocess
 import socket
+from threading import Thread
 
 from django.http import HttpResponse
 from django.views.generic import TemplateView
-from WebTerm.models import Device
+from WebTerm.models import Device, Port
 from datetime import datetime, timezone
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -36,16 +37,17 @@ timeout_sec = "1200"
 logged_in = False
 
 
-
-
-
 def get_open_port():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(("", 0))
-    s.listen(1)
-    port = s.getsockname()[1]
-    s.close()
-    return port
+    # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # s.bind(("", 0))
+    # s.listen(1)
+    # port = s.getsockname()[1]
+    # s.close()
+    # return port
+    ports = Port.objects.filter(available=True)
+    print(ports[0])
+
+    return ports[0]
 
 
 def parse_dict_cookies(value):
@@ -99,11 +101,11 @@ def getDevices():
     device_list = json.loads(r.text)
     print(device_list)
 
-    filtered_device_list = []
-    for device in device_list:
-        if device['connectionState']['state'] == "CONNECTED":
-            filtered_device_list.append(device)
-    device_list = filtered_device_list
+    # filtered_device_list = []
+    # for device in device_list:
+    #     if device['connectionState']['state'] == "CONNECTED":
+    #         filtered_device_list.append(device)
+    # device_list = filtered_device_list
     return json.dumps(device_list)
 
 
@@ -121,6 +123,15 @@ class ReturnValue():
         self.lastAccessTime = last_access_time
         self.pending = pending
         self.authenticated = authenticated
+
+
+def hostTerminal(command, device, port):
+    # command = "ttyd -o -p " + port.originalPort + " bash"
+    # do it!
+    subprocess.Popen(command, shell=True).wait()
+    device.delete()
+    port.available = True
+    port.save()
 
 
 def terminal(request):
@@ -164,34 +175,42 @@ def terminal(request):
     # get the password
 
     # prepare commands and ports
-    port_to_host_terminal = str(get_open_port())
-    port_to_host_terminal = "11112"
+    port = get_open_port()
     pre_entered_command = "sshpass -p " + clientPassword + " ssh " + clientUsername + "@" + clientIP
-    command = "timeout " + timeout_sec + " ttyd -o -p " + port_to_host_terminal + " " + pre_entered_command
+    command = "timeout " + timeout_sec + " ttyd -o -p " + port.originalPort + " " + pre_entered_command
+
+    # mark as unavailable
+    port.available = False
 
     # start the timer
     d.lastAccessTime = datetime.now(timezone.utc)
 
     # do it!
-    subprocess.Popen(command, shell=True)
-    port_to_host_terminal = "28867"
+    t = Thread(target=hostTerminal, args=(command, d, port,))
+    t.start()
+    # subprocess.Popen(command, shell=True)
     # subprocess.Popen("ttyd -o -p " + port_to_host_terminal + " " + "bash", shell=True)
     d.save()
+    port.save()
     # print(json.dumps(ReturnValue(False, d.lastAccessTime, port_to_host_terminal), default=lambda o: o.__str__()))
 
     return HttpResponse(
-        json.dumps(ReturnValue(False, d.lastAccessTime, port_to_host_terminal).__dict__, cls=DjangoJSONEncoder),
+        json.dumps(ReturnValue(False, d.lastAccessTime, port.transferedPort).__dict__, cls=DjangoJSONEncoder),
         content_type="application/json")
 
 
-def removeDevice(request):
-    DeviceId = request.GET.get('DeviceId', "")
-    try:
-        Device.objects.get(id=DeviceId).delete()
-    except:
-        return HttpResponse(False)
-
-    return HttpResponse(True)
+# def removeDevice(request):
+#     DeviceId = request.GET.get('DeviceId', "")
+#     transferedPort = request.GET.get('transferedPort', "")
+#     try:
+#         port = Port.objects.get(transferedPort=transferedPort)
+#         port.available = True
+#         port.save()
+#         Device.objects.get(id=DeviceId).delete()
+#     except:
+#         return HttpResponse(False)
+#
+#     return HttpResponse(True)
 
 
 class HomePageView(TemplateView):

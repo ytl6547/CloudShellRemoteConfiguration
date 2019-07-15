@@ -64,10 +64,12 @@
         {#var startTime;#}
         var countdown;
         var connected;
+        var terminalPort;
 
         window.onunload = window.onbeforeunload = function(){
             if(connected){
-                clearDevice();
+                {#clearDevice();#}
+                disconnect();
                 connected=false;
             }
             return null;
@@ -81,7 +83,7 @@
             {#console.log(connected);#}
             {#terminalOnLoad();#}
             if(connected && document.getElementById("terminal").src === window.location.href){
-                clearDevice();
+                {#clearDevice();#}
                 clearInterval(countdown);
                 document.getElementById("message").innerText="";
                 document.getElementById("countdown").innerText="";
@@ -89,27 +91,26 @@
             }
         };
         function disconnect() {
-            if(connected){
-                document.getElementById("terminal").src="";
-            }
+            document.getElementById("terminal").src="";
         }
 
-        function clearDevice(){
-            $.ajax({
-                url: "/remove/",
-                type: "GET",
-                data: {DeviceId: ConnectedDeviceId},
-                success: function (result) {
-                    if(result==="True"){
-                        alert("Successfully removed device from database");
-                    }
-                    else{
-                        alert("Failed to remove device from database");
-                    }
-                }
-            });
-            console.log('Cleared');
-        }
+        {#function clearDevice(){#}
+        {#    $.ajax({#}
+        {#        url: "/remove/",#}
+        {#        type: "GET",#}
+        {#        data: {DeviceId: ConnectedDeviceId, transferedPort: terminalPort},#}
+        {#        success: function (result) {#}
+        {#            if(result==="True"){#}
+        {#                terminalPort="";#}
+        {#                alert("Successfully removed device from database");#}
+        {#            }#}
+        {#            else{#}
+        {#                alert("Failed to remove device from database");#}
+        {#            }#}
+        {#        }#}
+        {#    });#}
+        {#    console.log('Cleared');#}
+        {# }#}
 
         $('#form').submit(function(){
             $.ajax({
@@ -156,6 +157,7 @@
                   }
                   else{
                       if(result.port!=null){
+                          terminalPort = result.port;
                           document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;
                           document.getElementById("message").innerText=" Your session will expire after ";
                           {#if(connected){#}
@@ -204,7 +206,7 @@
             for(i=0; i<device_list.length; i++){
                 {#console.log(device_list[i]);#}
                 if(device_list[i].name.includes(document.getElementById("text-input").value)){
-                    document.getElementById("dropdown-content").innerHTML+="<a class=\"dropdown-item\" onclick=\"selectDevice('"+device_list[i].deviceId+"','"+device_list[i].name+"')\">"+device_list[i].name+"</a>";
+                    document.getElementById("dropdown-content").innerHTML+="<a class=\"dropdown-item\" onclick=\"selectDevice('"+device_list[i].deviceId+"','"+device_list[i].name+"')\">"+device_list[i].name+" ("+device_list[i].connectionState.state+")"+"</a>";
                 }
 
             }

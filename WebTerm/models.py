@@ -13,6 +13,10 @@ class Device(models.Model):
     def __str__(self):
         return self.id
 
+class Port(models.Model):
+    originalPort = models.CharField(max_length=255, primary_key=True)
+    transferedPort = models.CharField(max_length=255)
+    available = models.BooleanField(default=True)
 
 # class Blog(models.Model):
 #     name = models.CharField(max_length=100)
