@@ -45,9 +45,11 @@ def get_open_port():
     # s.close()
     # return port
     ports = Port.objects.filter(available=True)
-    print(ports[0])
+    if len(ports) > 0:
+        # print(ports[0])
+        return ports[0]
 
-    return ports[0]
+    return False
 
 
 def parse_dict_cookies(value):
@@ -65,30 +67,30 @@ def parse_dict_cookies(value):
 
 
 def loginToDNAC():
-    print("login to DNAC")
+    # print("login to DNAC")
     global Cookies
     global logged_in
     response = session.get(login_url, auth=(username, password), verify=False)
-    print(response.status_code)
+    # print(response.status_code)
     if response.status_code != 200:
-        print("login failed")
+        # print("login failed")
         response = session.get(login_url, auth=(CORRECT_USERNAME, CORRECT_PASSWORD), verify=False)
 
         Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
-        print(Cookies)
+        # print(Cookies)
         logged_in = False
-        print(logged_in)
+        # print(logged_in)
         return False
 
     Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
-    print(Cookies)
+    # print(Cookies)
     logged_in = True
-    print(logged_in)
+    # print(logged_in)
     return True
 
 
 def getDevices():
-    print("get devices")
+    # print("get devices")
     global device_list
     if Cookies == {}:
         loginToDNAC()
@@ -97,9 +99,9 @@ def getDevices():
     if r.status_code != 200:
         loginToDNAC()
         r = session.get(check_device_url, cookies=Cookies, verify=False)
-    print(r.status_code)
+    # print(r.status_code)
     device_list = json.loads(r.text)
-    print(device_list)
+    # print(device_list)
 
     # filtered_device_list = []
     # for device in device_list:
@@ -113,7 +115,7 @@ def login(request):
     global username, password
     username = request.POST.get("username")
     password = request.POST.get("password")
-    print(username, password)
+    # print(username, password)
     return HttpResponse(loginToDNAC())
 
 
@@ -156,19 +158,19 @@ def terminal(request):
     # Query the database
     try:
         d = Device.objects.get(id=DeviceId)
-        print(d.id)
-        print(d.lastAccessTime)
-        if (datetime.now(timezone.utc) - d.lastAccessTime).total_seconds() < 1200:  # using by others
-            # return not pending and the access time of others
-            # print((datetime.now(timezone.utc) - d.lastAccessTime).total_seconds())
-            print("now:", datetime.now(timezone.utc))
-            print("last: ", d.lastAccessTime)
-            return HttpResponse(json.dumps(ReturnValue(False, d.lastAccessTime).__dict__, cls=DjangoJSONEncoder),
-                                content_type="application/json")
-    # except Device.DoesNotExist:  # not accessed by any one
-    #     d = Device(id=DeviceId)
-    except:
+        # print(d.id)
+        # print(d.lastAccessTime)
+        # if (datetime.now(timezone.utc) - d.lastAccessTime).total_seconds() < 1200:  # using by others
+        #     # return not pending and the access time of others
+        #     # print((datetime.now(timezone.utc) - d.lastAccessTime).total_seconds())
+        #     print("now:", datetime.now(timezone.utc))
+        #     print("last: ", d.lastAccessTime)
+        return HttpResponse(json.dumps(ReturnValue(False, d.lastAccessTime).__dict__, cls=DjangoJSONEncoder),
+                            content_type="application/json")
+    except Device.DoesNotExist:  # not accessed by any one
         d = Device(id=DeviceId)
+    # except:
+    #     d = Device(id=DeviceId)
     # else:
     #     d = Device(id=DeviceId)
 
@@ -176,7 +178,10 @@ def terminal(request):
 
     # prepare commands and ports
     port = get_open_port()
-    pre_entered_command = "sshpass -p " + clientPassword + " ssh " + clientUsername + "@" + clientIP
+    # if port is False:
+
+
+    pre_entered_command = "sshpass -p " + clientPassword + " ssh -o \"StrictHostKeyChecking no\" " + clientUsername + "@" + clientIP
     command = "timeout " + timeout_sec + " ttyd -o -p " + port.originalPort + " " + pre_entered_command
 
     # mark as unavailable
@@ -197,20 +202,6 @@ def terminal(request):
     return HttpResponse(
         json.dumps(ReturnValue(False, d.lastAccessTime, port.transferedPort).__dict__, cls=DjangoJSONEncoder),
         content_type="application/json")
-
-
-# def removeDevice(request):
-#     DeviceId = request.GET.get('DeviceId', "")
-#     transferedPort = request.GET.get('transferedPort', "")
-#     try:
-#         port = Port.objects.get(transferedPort=transferedPort)
-#         port.available = True
-#         port.save()
-#         Device.objects.get(id=DeviceId).delete()
-#     except:
-#         return HttpResponse(False)
-#
-#     return HttpResponse(True)
 
 
 class HomePageView(TemplateView):

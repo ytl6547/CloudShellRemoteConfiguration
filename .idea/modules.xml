@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$USER_HOME$/PycharmProjects/PythonAPITest/.idea/PythonAPITest.iml" filepath="$USER_HOME$/PycharmProjects/PythonAPITest/.idea/PythonAPITest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/TerminalControl.iml" filepath="$PROJECT_DIR$/.idea/TerminalControl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../CloudShell/mysite/.idea/mysite.iml" filepath="$PROJECT_DIR$/../../CloudShell/mysite/.idea/mysite.iml" />
     </modules>
   </component>
 </project>
