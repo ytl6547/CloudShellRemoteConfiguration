@@ -116,16 +116,12 @@
               data:{DeviceId: CurrDeviceId},
               success: function(result){
                   console.log(result);
-
                   clearInterval(countdown);
-                  if(result.authenticated===false){
-                      alert("Please login first!");
-                  }
-                  else if(result.pending===true){
-                      document.getElementById("message").innerText=" This device is not ready to use";
-                  }
-                  else{
-                      if(result.port!=null){
+                  if(result.success){
+                      if(result.port===null){
+                          document.getElementById("message").innerText=" Currently using by others. Wait ";
+                      }
+                      else{
                           terminalPort = result.port;
                           document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;
                           document.getElementById("message").innerText=" Your session will expire after ";
@@ -133,13 +129,34 @@
                           ConnectedDeviceId = CurrDeviceId;
                           ConnectedDeviceName = CurrDeviceName;
                           document.getElementById("id").innerText = ConnectedDeviceName;
-
-                      }
-                      else{
-                          document.getElementById("message").innerText=" Currently using by others. Wait ";
                       }
                       startCountDown(result.lastAccessTime);
                   }
+                  else{
+                      alert(result.message)
+                  }
+                  {#if(result.authenticated===false){#}
+                  {#    alert("Please login first!");#}
+                  {# }#}
+                  {#else if(result.pending===true){#}
+                  {#    document.getElementById("message").innerText=" This device is not ready to use";#}
+                  {# }#}
+                  {#else{#}
+                  {#    if(result.port!=null){#}
+                  {#        terminalPort = result.port;#}
+                  {#        document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;#}
+                  {#        document.getElementById("message").innerText=" Your session will expire after ";#}
+                  {#        connected = true;#}
+                  {#        ConnectedDeviceId = CurrDeviceId;#}
+                  {#        ConnectedDeviceName = CurrDeviceName;#}
+                  {#        document.getElementById("id").innerText = ConnectedDeviceName;#}
+                  {##}
+                  {#    }#}
+                  {#    else{#}
+                  {#        document.getElementById("message").innerText=" Currently using by others. Wait ";#}
+                  {#    }#}
+                  {#    startCountDown(result.lastAccessTime);#}
+                  {# }#}
 
               }
             });

@@ -1,7 +1,7 @@
 import subprocess
 from threading import Thread
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import TemplateView
 from WebTerm.models import Device, Port
 from datetime import datetime, timezone
@@ -109,7 +109,8 @@ def terminal(request):
     if not logged_in:
         r = ReturnValue()
         r.authenticated = False
-        return HttpResponse(json.dumps(r.__dict__, cls=DjangoJSONEncoder), content_type="application/json")
+        return JsonResponse({"success": False, "message": "Please login first!"})
+        # return HttpResponse(json.dumps(r.__dict__, cls=DjangoJSONEncoder), content_type="application/json")
 
     DeviceId = request.GET.get('DeviceId', "")
 
@@ -118,22 +119,25 @@ def terminal(request):
     for device in device_list:
         if device["deviceId"] == DeviceId:
             if device["connectionState"]["state"] != "CONNECTED":
-                return HttpResponse(json.dumps(ReturnValue().__dict__, cls=DjangoJSONEncoder),
-                                    content_type="application/json")
+                return JsonResponse({"success": False, "message": "This device is not ready to use"})
+                # return HttpResponse(json.dumps(ReturnValue().__dict__, cls=DjangoJSONEncoder),
+                #                     content_type="application/json")
             clientIP = device["ipAddr"]
             break
 
     # Query the database to check availability
     try:
         d = Device.objects.get(id=DeviceId)
-        return HttpResponse(json.dumps(ReturnValue(False, d.lastAccessTime).__dict__, cls=DjangoJSONEncoder),
-                            content_type="application/json")
+        return JsonResponse({"success": True, "port": None, "lastAccessTime": d.lastAccessTime})
+        # return HttpResponse(json.dumps(ReturnValue(False, d.lastAccessTime).__dict__, cls=DjangoJSONEncoder),
+        # content_type="application/json")
     except Device.DoesNotExist:  # not accessed by any one
         d = Device(id=DeviceId)
 
     # prepare commands and ports
     port = get_open_port()
-    # if port is False:
+    if port is False:
+        return JsonResponse({"success": False, "message": "No available ports. Please wait or add new ports!"})
 
     pre_entered_command = "sshpass -p " + clientPassword + " ssh -o \"StrictHostKeyChecking no\" " + clientUsername + "@" + clientIP
     command = "timeout " + timeout_sec + " ttyd -o -p " + port.originalPort + " " + pre_entered_command
@@ -149,10 +153,10 @@ def terminal(request):
     t.start()
     d.save()
     port.save()
-
-    return HttpResponse(
-        json.dumps(ReturnValue(False, d.lastAccessTime, port.transferedPort).__dict__, cls=DjangoJSONEncoder),
-        content_type="application/json")
+    return JsonResponse({"success": True, "port": port.transferedPort, "lastAccessTime": d.lastAccessTime})
+    # return HttpResponse(
+    #     json.dumps(ReturnValue(False, d.lastAccessTime, port.transferedPort).__dict__, cls=DjangoJSONEncoder),
+    #     content_type="application/json")
 
 
 class HomePageView(TemplateView):
