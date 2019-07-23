@@ -1,5 +1,4 @@
 import subprocess
-import socket
 from threading import Thread
 
 from django.http import HttpResponse
@@ -7,21 +6,12 @@ from django.views.generic import TemplateView
 from WebTerm.models import Device, Port
 from datetime import datetime, timezone
 from django.core.serializers.json import DjangoJSONEncoder
-
-# from djongo import database
-# import asyncio
-# from channels.consumer import AsyncConsumer
-# import time
-# import websockets
 import requests
 import json
 
 session = requests.Session()
 Cookies = {}
 device_list = []
-
-# login_url = "https://172.27.250.16/api/system/v1/auth/login"
-# check_device_url = "https://172.27.250.16/api/rdm/v1/device"
 login_url = "https://172.23.165.132/api/system/v1/auth/login"
 check_device_url = "https://172.23.165.132/api/rdm/v1/device"
 username = ''
@@ -38,15 +28,8 @@ logged_in = False
 
 
 def get_open_port():
-    # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # s.bind(("", 0))
-    # s.listen(1)
-    # port = s.getsockname()[1]
-    # s.close()
-    # return port
     ports = Port.objects.filter(available=True)
     if len(ports) > 0:
-        # print(ports[0])
         return ports[0]
 
     return False
@@ -67,30 +50,22 @@ def parse_dict_cookies(value):
 
 
 def loginToDNAC():
-    # print("login to DNAC")
     global Cookies
     global logged_in
     response = session.get(login_url, auth=(username, password), verify=False)
-    # print(response.status_code)
     if response.status_code != 200:
-        # print("login failed")
         response = session.get(login_url, auth=(CORRECT_USERNAME, CORRECT_PASSWORD), verify=False)
 
         Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
-        # print(Cookies)
         logged_in = False
-        # print(logged_in)
         return False
 
     Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
-    # print(Cookies)
     logged_in = True
-    # print(logged_in)
     return True
 
 
 def getDevices():
-    # print("get devices")
     global device_list
     if Cookies == {}:
         loginToDNAC()
@@ -99,15 +74,7 @@ def getDevices():
     if r.status_code != 200:
         loginToDNAC()
         r = session.get(check_device_url, cookies=Cookies, verify=False)
-    # print(r.status_code)
     device_list = json.loads(r.text)
-    # print(device_list)
-
-    # filtered_device_list = []
-    # for device in device_list:
-    #     if device['connectionState']['state'] == "CONNECTED":
-    #         filtered_device_list.append(device)
-    # device_list = filtered_device_list
     return json.dumps(device_list)
 
 
@@ -115,7 +82,6 @@ def login(request):
     global username, password
     username = request.POST.get("username")
     password = request.POST.get("password")
-    # print(username, password)
     return HttpResponse(loginToDNAC())
 
 
@@ -128,9 +94,11 @@ class ReturnValue():
 
 
 def hostTerminal(command, device, port):
-    # command = "ttyd -o -p " + port.originalPort + " bash"
+    # global clientIP
+    print("Connecting to", clientIP)
     # do it!
     subprocess.Popen(command, shell=True).wait()
+    print("Disconnected from", clientIP)
     device.delete()
     port.available = True
     port.save()
@@ -145,7 +113,7 @@ def terminal(request):
 
     DeviceId = request.GET.get('DeviceId', "")
 
-    # check whether device status is PENDING
+    # check whether device status is CONNECTED
     getDevices()
     for device in device_list:
         if device["deviceId"] == DeviceId:
@@ -155,31 +123,17 @@ def terminal(request):
             clientIP = device["ipAddr"]
             break
 
-    # Query the database
+    # Query the database to check availability
     try:
         d = Device.objects.get(id=DeviceId)
-        # print(d.id)
-        # print(d.lastAccessTime)
-        # if (datetime.now(timezone.utc) - d.lastAccessTime).total_seconds() < 1200:  # using by others
-        #     # return not pending and the access time of others
-        #     # print((datetime.now(timezone.utc) - d.lastAccessTime).total_seconds())
-        #     print("now:", datetime.now(timezone.utc))
-        #     print("last: ", d.lastAccessTime)
         return HttpResponse(json.dumps(ReturnValue(False, d.lastAccessTime).__dict__, cls=DjangoJSONEncoder),
                             content_type="application/json")
     except Device.DoesNotExist:  # not accessed by any one
         d = Device(id=DeviceId)
-    # except:
-    #     d = Device(id=DeviceId)
-    # else:
-    #     d = Device(id=DeviceId)
-
-    # get the password
 
     # prepare commands and ports
     port = get_open_port()
     # if port is False:
-
 
     pre_entered_command = "sshpass -p " + clientPassword + " ssh -o \"StrictHostKeyChecking no\" " + clientUsername + "@" + clientIP
     command = "timeout " + timeout_sec + " ttyd -o -p " + port.originalPort + " " + pre_entered_command
@@ -193,11 +147,8 @@ def terminal(request):
     # do it!
     t = Thread(target=hostTerminal, args=(command, d, port,))
     t.start()
-    # subprocess.Popen(command, shell=True)
-    # subprocess.Popen("ttyd -o -p " + port_to_host_terminal + " " + "bash", shell=True)
     d.save()
     port.save()
-    # print(json.dumps(ReturnValue(False, d.lastAccessTime, port_to_host_terminal), default=lambda o: o.__str__()))
 
     return HttpResponse(
         json.dumps(ReturnValue(False, d.lastAccessTime, port.transferedPort).__dict__, cls=DjangoJSONEncoder),

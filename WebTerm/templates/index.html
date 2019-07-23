@@ -5,7 +5,6 @@
     <title>HomePage</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-{#    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>#}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <style>
@@ -61,56 +60,30 @@
         var CurrDeviceName;
         var ConnectedDeviceId;
         var ConnectedDeviceName;
-        {#var startTime;#}
         var countdown;
         var connected;
         var terminalPort;
 
         window.onunload = window.onbeforeunload = function(){
             if(connected){
-                {#clearDevice();#}
                 disconnect();
                 connected=false;
             }
             return null;
         };
-        function terminalOnLoad() {
-            console.log(document.getElementById("terminal").src);
-        }
+
         document.getElementById('terminal').onload = () => {
-            {#console.log(document.getElementById("terminal").src);#}
-            {#console.log(window.location);#}
-            {#console.log(connected);#}
-            {#terminalOnLoad();#}
             if(connected && document.getElementById("terminal").src === window.location.href){
-                {#clearDevice();#}
                 clearInterval(countdown);
                 document.getElementById("message").innerText="";
                 document.getElementById("countdown").innerText="";
                 connected = false;
             }
         };
+
         function disconnect() {
             document.getElementById("terminal").src="";
         }
-
-        {#function clearDevice(){#}
-        {#    $.ajax({#}
-        {#        url: "/remove/",#}
-        {#        type: "GET",#}
-        {#        data: {DeviceId: ConnectedDeviceId, transferedPort: terminalPort},#}
-        {#        success: function (result) {#}
-        {#            if(result==="True"){#}
-        {#                terminalPort="";#}
-        {#                alert("Successfully removed device from database");#}
-        {#            }#}
-        {#            else{#}
-        {#                alert("Failed to remove device from database");#}
-        {#            }#}
-        {#        }#}
-        {#    });#}
-        {#    console.log('Cleared');#}
-        {# }#}
 
         $('#form').submit(function(){
             $.ajax({
@@ -118,7 +91,6 @@
               type: 'POST',
               data : $('#form').serialize(),
               success: function(result){
-                {#console.log(result);#}
                 if(result==="True"){
                     $('#connect').prop("disabled", false)
                 }
@@ -132,20 +104,17 @@
         });
         function prepareTerminal(){
             if(connected){
-                {#disconnect()#}
-                alert("Please disconnect first");
+                alert("Please disconnect first, and then connect again");
                 disconnect();
                 return;
             }
-            {#if(connected){#}
-            {#    return#}
-            {# }#}
+
+            console.log("Connecting to device with DeviceId:", CurrDeviceId);
             $.ajax({
               url: "/terminal/",
               type: "GET",
               data:{DeviceId: CurrDeviceId},
               success: function(result){
-                  {#console.log(document.domain);#}
                   console.log(result);
 
                   clearInterval(countdown);
@@ -160,12 +129,7 @@
                           terminalPort = result.port;
                           document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;
                           document.getElementById("message").innerText=" Your session will expire after ";
-                          {#if(connected){#}
-                          {#    clearDevice();#}
-                          {# }#}
-                          {#else{#}
                           connected = true;
-                          {# }#}
                           ConnectedDeviceId = CurrDeviceId;
                           ConnectedDeviceName = CurrDeviceName;
                           document.getElementById("id").innerText = ConnectedDeviceName;
@@ -183,15 +147,15 @@
         function selectDevice(DeviceId, DeviceName){
             CurrDeviceId = DeviceId;
             CurrDeviceName = DeviceName;
-            console.log(DeviceId);
+            console.log("Selected DeviceId: ", DeviceId);
             document.getElementById("text-input").value=DeviceName;
         }
         function getDevices() {
-            console.log("get device");
+            console.log("Getting device list");
             connected = false;
             var source = new WebSocket("ws://" + window.location.host + "/ws/devices/");
             source.onmessage = function(event) {
-                console.log("received message");
+                console.log("Received device list");
                 device_list = JSON.parse(event.data);
                 console.log(device_list);
                 showDropdown();
@@ -202,9 +166,7 @@
         }
         function showDropdown(){
             document.getElementById("dropdown-content").innerHTML="";
-            {#console.log(device_list);#}
             for(i=0; i<device_list.length; i++){
-                {#console.log(device_list[i]);#}
                 if(device_list[i].name.includes(document.getElementById("text-input").value)){
                     document.getElementById("dropdown-content").innerHTML+="<a class=\"dropdown-item\" onclick=\"selectDevice('"+device_list[i].deviceId+"','"+device_list[i].name+"')\">"+device_list[i].name+" ("+device_list[i].connectionState.state+")"+"</a>";
                 }
@@ -212,9 +174,7 @@
             }
         }
         function filter(){
-            {#console.log(document.getElementById("text-input").value)#}
             if(document.getElementById("text-input").value){
-                {#document.getElementById("down-button").dropdown();#}
                 $('#down-button').dropdown('show')
             }
             else{
@@ -231,15 +191,12 @@
 
               // Find the distance between now and the count down date
               var distance = 1200000 - (now - Date.parse(last_access_time));
-              {#console.log(now.toString(), Date.parse(last_access_time).toString());#}
-              {#console.log(distance);#}
 
               // Time calculations for hours, minutes and seconds
               var hours = Math.floor(distance / (1000 * 60 * 60));
               var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
               var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-              // Display the result in the element with id="demo"
               document.getElementById("countdown").innerHTML = hours + "h "
               + minutes + "m " + seconds + "s ";
 
