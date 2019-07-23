@@ -149,7 +149,7 @@ def terminal(request):
     getDevices()
     for device in device_list:
         if device["deviceId"] == DeviceId:
-            if device["connectionState"]["state"] == "PENDING":
+            if device["connectionState"]["state"] != "CONNECTED":
                 return HttpResponse(json.dumps(ReturnValue().__dict__, cls=DjangoJSONEncoder),
                                     content_type="application/json")
             clientIP = device["ipAddr"]
