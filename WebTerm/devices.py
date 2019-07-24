@@ -11,6 +11,7 @@ class DeviceListUpdateConsumer(WebsocketConsumer):
             try:
                 self.send(views.getDevices())
             except:
+                # print("Exception")
                 break
 
             time.sleep(300)
@@ -20,8 +21,8 @@ class DeviceListUpdateConsumer(WebsocketConsumer):
         self.connected = True
         self.checkDNACUpdate()
 
-    def disconnect(self, close_code):
-        # print(close_code)
+    def disconnect(self, message):
+        print(message)
         self.connected = False
-        # print(self.connected)
+        print(self.connected)
         pass

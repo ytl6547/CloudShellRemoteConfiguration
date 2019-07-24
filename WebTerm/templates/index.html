@@ -68,6 +68,7 @@
             if(connected){
                 disconnect();
                 connected=false;
+                $("#disconnect").prop("disabled", true);
             }
             return null;
         };
@@ -78,6 +79,7 @@
                 document.getElementById("message").innerText="";
                 document.getElementById("countdown").innerText="";
                 connected = false;
+                $("#disconnect").prop("disabled", true);
             }
         };
 
@@ -126,6 +128,7 @@
                           document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;
                           document.getElementById("message").innerText=" Your session will expire after ";
                           connected = true;
+                          $("#disconnect").prop("disabled", false);
                           ConnectedDeviceId = CurrDeviceId;
                           ConnectedDeviceName = CurrDeviceName;
                           document.getElementById("id").innerText = ConnectedDeviceName;
@@ -135,29 +138,6 @@
                   else{
                       alert(result.message)
                   }
-                  {#if(result.authenticated===false){#}
-                  {#    alert("Please login first!");#}
-                  {# }#}
-                  {#else if(result.pending===true){#}
-                  {#    document.getElementById("message").innerText=" This device is not ready to use";#}
-                  {# }#}
-                  {#else{#}
-                  {#    if(result.port!=null){#}
-                  {#        terminalPort = result.port;#}
-                  {#        document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;#}
-                  {#        document.getElementById("message").innerText=" Your session will expire after ";#}
-                  {#        connected = true;#}
-                  {#        ConnectedDeviceId = CurrDeviceId;#}
-                  {#        ConnectedDeviceName = CurrDeviceName;#}
-                  {#        document.getElementById("id").innerText = ConnectedDeviceName;#}
-                  {##}
-                  {#    }#}
-                  {#    else{#}
-                  {#        document.getElementById("message").innerText=" Currently using by others. Wait ";#}
-                  {#    }#}
-                  {#    startCountDown(result.lastAccessTime);#}
-                  {# }#}
-
               }
             });
         }
@@ -170,6 +150,7 @@
         function getDevices() {
             console.log("Getting device list");
             connected = false;
+            $("#disconnect").prop("disabled", true);
             var source = new WebSocket("ws://" + window.location.host + "/ws/devices/");
             source.onmessage = function(event) {
                 console.log("Received device list");
@@ -207,12 +188,12 @@
               var now = new Date().getTime();
 
               // Find the distance between now and the count down date
-              var distance = 1200000 - (now - Date.parse(last_access_time));
+              var distance = 1200000 + Date.parse(last_access_time) - now;
 
               // Time calculations for hours, minutes and seconds
-              var hours = Math.floor(distance / (1000 * 60 * 60));
-              var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-              var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+              var hours = Math.floor(distance / 3600000);
+              var minutes = Math.floor((distance % 3600000) / 60000);
+              var seconds = Math.floor((distance % 60000) / 1000);
 
               document.getElementById("countdown").innerHTML = hours + "h "
               + minutes + "m " + seconds + "s ";
@@ -222,6 +203,7 @@
                 clearInterval(countdown);
                 document.getElementById("countdown").innerHTML = "EXPIRED";
                 connected = false;
+                $("#disconnect").prop("disabled", true);
               }
             }, 1000);
         }
