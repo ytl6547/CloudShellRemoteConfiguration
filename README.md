@@ -86,6 +86,68 @@ Cloud Shell Remote Configuration is a web application to remotely configure Cisc
     # Clone Cloud Shell
     git clone https://github.com/ytl6547/CloudShellRemoteConfiguration.git
     
+## Install in a Docker Container in DNAC
+    # Run this command
+    apt-get -y update && apt-get -y upgrade
+    
+    # Run this command
+    apt-get -y install iputils-ping openssh-server python3 python3-pip python3-dev cmake g++ pkg-config git vim-common libjson-c-dev libssl-dev sshpass telnet redis-server
+    
+    # Run all the commands below together
+    mkdir CloudShell
+    cd CloudShell
+    
+    export HTTP_PROXY="http://proxy.esl.cisco.com:80"
+    export HTTPS_PROXY="https://proxy.esl.cisco.com:80"
+    
+    git clone https://github.com/warmcat/libwebsockets.git
+    cd libwebsockets/
+    git checkout 89eedcaa94e1c8a97ea3af10642fd224bcea068f
+    mkdir build
+    cd build
+    cmake ..
+    make
+    make install
+    ldconfig
+    cd ../..
+    
+    git clone https://github.com/tsl0922/ttyd.git
+    cd ttyd && mkdir build && cd build
+    cmake ..
+    make && make install
+    cd ../..
+    
+    # Install virtualenv
+    pip3 install virtualenv
+    virtualenv --version
+    virtualenv env
+    . env/bin/activate
+    
+    # Install Django
+    pip3 install Django
+    django-admin --version
+    
+    # Install Django Channels
+    pip3 install -U channels
+    
+    # Install Paramiko
+    pip3 install paramiko
+    
+    # Install requests
+    pip3 install requests
+    
+    # Clone Cloud Shell
+    git clone https://github.com/ytl6547/CloudShellRemoteConfiguration.git
+    
+    /etc/init.d/redis-server start
+    pip3 install channels_redis[cryptography]
+    
+    unset HTTPS_PROXY
+    unset HTTP_PROXY
+    
+    cd CloudShellRemoteConfiguration/
+    python3 manage.py runserver 0.0.0.0:8061 &
+
 ## Example Usage
     
     sudo -s
