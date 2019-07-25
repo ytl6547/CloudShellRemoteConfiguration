@@ -75,9 +75,8 @@
         };
 
         document.getElementById('terminal').onload = () => {
-            {#console.log("loaded!");#}
             try{
-                if(failedTimes<=2){
+                if(failedTimes<3){
                     document.getElementById('terminal').contentWindow.location.href;
                 }
                 else{
@@ -87,10 +86,13 @@
                 }
             }
             catch (e) {
-                document.getElementById('terminal').src = document.getElementById('terminal').src;
-                failedTimes+=1;
-                console.log("iframe failed times:", failedTimes);
-                return;
+                console.log(e);
+                if(e instanceof DOMException){
+                    document.getElementById('terminal').src = document.getElementById('terminal').src;
+                    failedTimes+=1;
+                    console.log("iframe failed times:", failedTimes);
+                    return;
+                }
             }
             failedTimes = 0;
 
