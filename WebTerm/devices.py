@@ -1,6 +1,7 @@
 from channels.generic.websocket import WebsocketConsumer
 import time
 from WebTerm import views
+from threading import Thread
 
 
 class DeviceListUpdateConsumer(WebsocketConsumer):
@@ -16,9 +17,11 @@ class DeviceListUpdateConsumer(WebsocketConsumer):
             time.sleep(300)
 
     def connect(self):
+        global t
         self.accept()
         self.connected = True
-        self.checkDNACUpdate()
+        t = Thread(target=self.checkDNACUpdate)
+        t.start()
 
     def disconnect(self, close_code):
         self.connected = False
