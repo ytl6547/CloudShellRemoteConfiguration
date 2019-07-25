@@ -75,34 +75,32 @@
         };
 
         document.getElementById('terminal').onload = () => {
-            try{
-                if(failedTimes<3){
-                    document.getElementById('terminal').contentWindow.location.href;
-                }
-                else{
-                    console.log("iframe failed", failedTimes, "times, stopped attempting");
-                    failedTimes=0;
-                    return;
-                }
-            }
-            catch (e) {
-                console.log(e);
-                if(e instanceof DOMException){
-                    document.getElementById('terminal').src = document.getElementById('terminal').src;
-                    failedTimes+=1;
-                    console.log("iframe failed times:", failedTimes);
-                    return;
-                }
-            }
-            failedTimes = 0;
-
             if(connected && document.getElementById("terminal").src === window.location.href){ //just disconnected
                 clearInterval(countdown);
                 document.getElementById("message").innerText="";
                 document.getElementById("countdown").innerText="";
                 connected = false;
                 $("#disconnect").prop("disabled", true);
+                return;
             }
+            setTimeout(function() {
+                if (failedTimes < 3) {
+                    try {
+                        console.log(document.getElementById('terminal').contentWindow.location.href);
+                    } catch (e) {
+                        console.log(e);
+                        if (e instanceof DOMException) {
+                            document.getElementById('terminal').src = document.getElementById('terminal').src;
+                            failedTimes += 1;
+                            console.log("iframe failed times:", failedTimes);
+                            return;
+                        }
+                    }
+                } else {
+                    console.log("iframe failed", failedTimes, "times, stopped attempting");
+                }
+                failedTimes = 0;
+            }, 2000);
         };
 
         function disconnect() {
