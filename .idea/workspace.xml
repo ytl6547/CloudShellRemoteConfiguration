@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="29bcb2b7-fc11-4e46-8b09-fa9905db758b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/WebTerm/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebTerm/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -34,7 +33,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/WebTerm/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="437">
+            <state relative-caret-position="349">
               <caret line="102" column="16" selection-start-line="102" selection-start-column="16" selection-end-line="102" selection-end-column="16" />
               <folding>
                 <element signature="n#style#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -302,12 +301,12 @@
       <workItem from="1560357745063" duration="12011000" />
       <workItem from="1561054377284" duration="6947000" />
       <workItem from="1563307993138" duration="26325000" />
-      <workItem from="1563923780026" duration="15615000" />
+      <workItem from="1563923780026" duration="15732000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="287003000" />
+    <option name="totallyTimeSpent" value="287120000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -576,7 +575,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WebTerm/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
+        <state relative-caret-position="349">
           <caret line="102" column="16" selection-start-line="102" selection-start-column="16" selection-end-line="102" selection-end-column="16" />
           <folding>
             <element signature="n#style#0;n#body#0;n#html#0;n#!!top" expanded="true" />
