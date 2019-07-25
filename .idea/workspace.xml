@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="29bcb2b7-fc11-4e46-8b09-fa9905db758b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/WebTerm/devices.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebTerm/devices.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebTerm/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebTerm/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebTerm/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebTerm/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,11 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/WebTerm/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="456">
-              <caret line="136" column="52" lean-forward="true" selection-start-line="136" selection-start-column="52" selection-end-line="136" selection-end-column="52" />
+            <state relative-caret-position="-1665">
+              <caret line="14" column="61" lean-forward="true" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -31,68 +34,26 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/terminalControl/settings.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="46" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="46" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/WebTerm/routing.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="52" selection-start-line="6" selection-start-column="52" selection-end-line="6" selection-end-column="52" />
-              <folding>
-                <element signature="e#0#32#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WebTerm/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="117" column="54" selection-start-line="117" selection-start-column="54" selection-end-line="117" selection-end-column="54" />
+            <state relative-caret-position="331">
+              <caret line="245" column="52" lean-forward="true" selection-start-line="245" selection-start-column="52" selection-end-line="245" selection-end-column="52" />
               <folding>
-                <element signature="n#style#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/PycharmProjects/PythonAPITest/test.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="37" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/WebTerm/devices.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+            <state relative-caret-position="390">
+              <caret line="26" column="25" selection-start-line="26" selection-start-column="25" selection-end-line="26" selection-end-column="25" />
               <folding>
                 <element signature="e#0#56#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="967" column="13" selection-start-line="967" selection-start-column="8" selection-end-line="967" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -109,14 +70,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>para</find>
-      <find>hostLocal</find>
-      <find>start</find>
-      <find>jquery</find>
-      <find>showDropdown</find>
-      <find>connectionState</find>
-      <find>devices</find>
-      <find>session</find>
       <find>name</find>
       <find>utc</find>
       <find>document.getElementById(&quot;terminal&quot;)</find>
@@ -133,12 +86,20 @@
       <find>terminalOnLoad</find>
       <find>loginToDNAC</find>
       <find>displ</find>
-      <find>connected</find>
       <find>&quot;disconnect&quot;</find>
       <find>print</find>
-      <find>getDevices</find>
       <find>get</find>
       <find>_stop</find>
+      <find>getElement</find>
+      <find>ConnectedDeviceName</find>
+      <find>httprespo</find>
+      <find>clearInterval</find>
+      <find>timeout_sec</find>
+      <find>clientIP</find>
+      <find>connected</find>
+      <find>getDevices</find>
+      <find>device_list</find>
+      <find>Cookies</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -155,11 +116,11 @@
         <option value="$PROJECT_DIR$/WebTerm/admin.py" />
         <option value="$PROJECT_DIR$/WebTerm/urls.py" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/WebTerm/templates/index.html" />
-        <option value="$PROJECT_DIR$/WebTerm/views.py" />
         <option value="$PROJECT_DIR$/WebTerm/models.py" />
         <option value="$USER_HOME$/PycharmProjects/PythonAPITest/test.py" />
+        <option value="$PROJECT_DIR$/WebTerm/templates/index.html" />
         <option value="$PROJECT_DIR$/WebTerm/devices.py" />
+        <option value="$PROJECT_DIR$/WebTerm/views.py" />
       </list>
     </option>
   </component>
@@ -190,6 +151,12 @@
               <item name="TerminalControl" type="b2602c69:ProjectViewProjectNode" />
               <item name="terminalControl" type="462c0819:PsiDirectoryNode" />
               <item name="WebTerm" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TerminalControl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="terminalControl" type="462c0819:PsiDirectoryNode" />
+              <item name="WebTerm" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="TerminalControl" type="b2602c69:ProjectViewProjectNode" />
@@ -323,12 +290,12 @@
       <workItem from="1560357745063" duration="12011000" />
       <workItem from="1561054377284" duration="6947000" />
       <workItem from="1563307993138" duration="26325000" />
-      <workItem from="1563923780026" duration="23597000" />
+      <workItem from="1563923780026" duration="32020000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="294985000" />
+    <option name="totallyTimeSpent" value="303408000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -341,6 +308,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49910232" visible="true" weight="0.2932761" />
       <window_info id="Structure" order="1" sideWeight="0.50089765" side_tool="true" weight="0.24964234" />
@@ -385,13 +353,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="179">
           <caret line="170" selection-start-line="170" selection-end-line="170" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.dom.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="3382" column="4" selection-start-line="3382" selection-start-column="4" selection-end-line="3382" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -551,31 +512,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/terminalControl/settings.py">
+    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="46" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WebTerm/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="117" column="54" selection-start-line="117" selection-start-column="54" selection-end-line="117" selection-end-column="54" />
-          <folding>
-            <element signature="n#style#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+        <state relative-caret-position="225">
+          <caret line="967" column="13" selection-start-line="967" selection-start-column="8" selection-end-line="967" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/PycharmProjects/PythonAPITest/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="37" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="37" />
+        <state relative-caret-position="630">
+          <caret line="42" column="41" lean-forward="true" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/terminalControl/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
         </state>
       </provider>
     </entry>
@@ -589,29 +546,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/WebTerm/views.py">
+    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.dom.d.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="136" column="52" lean-forward="true" selection-start-line="136" selection-start-column="52" selection-end-line="136" selection-end-column="52" />
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="160">
+          <caret line="17140" column="17" selection-start-line="17140" selection-start-column="4" selection-end-line="17140" selection-end-column="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py">
+    <entry file="file://$PROJECT_DIR$/WebTerm/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="967" column="13" selection-start-line="967" selection-start-column="8" selection-end-line="967" selection-end-column="13" />
+        <state relative-caret-position="331">
+          <caret line="245" column="52" lean-forward="true" selection-start-line="245" selection-start-column="52" selection-end-line="245" selection-end-column="52" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebTerm/devices.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        <state relative-caret-position="390">
+          <caret line="26" column="25" selection-start-line="26" selection-start-column="25" selection-end-line="26" selection-end-column="25" />
           <folding>
             <element signature="e#0#56#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebTerm/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1665">
+          <caret line="14" column="61" lean-forward="true" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>

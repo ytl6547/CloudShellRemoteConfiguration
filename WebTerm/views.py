@@ -10,7 +10,6 @@ import json
 
 session = requests.Session()
 Cookies = {}
-device_list = []
 # login_url = "https://172.27.250.16/api/system/v1/auth/login"
 # check_device_url = "https://172.27.250.16/api/rdm/v1/device"
 login_url = "https://172.23.165.132/api/system/v1/auth/login"
@@ -22,8 +21,8 @@ CORRECT_PASSWORD = 'Maglev123'
 
 clientPassword = "Cisco"
 clientUsername = "Cisco"
-clientIP = "40.0.0.10"
-timeout_sec = "1200"
+clientIP = ""
+timeout_sec = 1200
 
 logged_in = False
 
@@ -67,7 +66,6 @@ def loginToDNAC():
 
 
 def getDevices():
-    global device_list
     if Cookies == {}:
         loginToDNAC()
 
@@ -75,8 +73,9 @@ def getDevices():
     if r.status_code != 200:
         loginToDNAC()
         r = session.get(check_device_url, cookies=Cookies, verify=False)
-    device_list = json.loads(r.text)
-    return json.dumps(device_list)
+    if r.status_code != 200:
+        return {"success": False, "message": "Failed to get the device list from the DNAC API with status code " + str(r.status_code)}
+    return {"success": True, "deviceList": json.loads(r.text)}
 
 
 def login(request):
@@ -104,18 +103,26 @@ def terminal(request):
     DeviceId = request.GET.get('DeviceId', "")
 
     # check whether device status is CONNECTED
-    getDevices()
-    for device in device_list:
+    deviceResult = getDevices()
+    if not deviceResult["success"]:
+        return JsonResponse(deviceResult)
+
+    deviceInDNAC = False
+    for device in deviceResult["deviceList"]:
         if device["deviceId"] == DeviceId:
             if device["connectionState"]["state"] != "CONNECTED":
                 return JsonResponse({"success": False, "message": "This device is not ready to use."})
             clientIP = device["ipAddr"]
+            deviceInDNAC = True
             break
+
+    if not deviceInDNAC:
+        return JsonResponse({"success": False, "message": "No such device in the DNAC"})
 
     # Query the database to check availability
     try:
         d = Device.objects.get(id=DeviceId)
-        return JsonResponse({"success": True, "port": None, "lastAccessTime": d.lastAccessTime})
+        return JsonResponse({"success": True, "port": None, "lastAccessTime": d.lastAccessTime, "timeoutSec": timeout_sec})
     except Device.DoesNotExist:  # not accessed by any one
         d = Device(id=DeviceId)
 
@@ -125,7 +132,9 @@ def terminal(request):
         return JsonResponse({"success": False, "message": "No available ports. Please wait or add new ports."})
 
     pre_entered_command = "sshpass -p " + clientPassword + " ssh -o \"StrictHostKeyChecking no\" " + clientUsername + "@" + clientIP
-    command = "timeout " + timeout_sec + " ttyd -o -p " + port.originalPort + " " + pre_entered_command
+    command = "timeout " + str(timeout_sec) + " ttyd -o -p " + port.originalPort + " " + pre_entered_command
+
+    t = Thread(target=hostTerminal, args=(command, d, port,))
 
     # mark as unavailable
     port.available = False
@@ -134,11 +143,10 @@ def terminal(request):
     d.lastAccessTime = datetime.now(timezone.utc)
 
     # do it!
-    t = Thread(target=hostTerminal, args=(command, d, port,))
     t.start()
     d.save()
     port.save()
-    return JsonResponse({"success": True, "port": port.transferedPort, "lastAccessTime": d.lastAccessTime})
+    return JsonResponse({"success": True, "port": port.transferedPort, "lastAccessTime": d.lastAccessTime, "timeoutSec": timeout_sec})
 
 
 class HomePageView(TemplateView):
