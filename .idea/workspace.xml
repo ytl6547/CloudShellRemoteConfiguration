@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="29bcb2b7-fc11-4e46-8b09-fa9905db758b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/WebTerm/devices.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebTerm/devices.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebTerm/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebTerm/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebTerm/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebTerm/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,8 +22,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/WebTerm/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1665">
-              <caret line="14" column="61" lean-forward="true" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
+            <state relative-caret-position="287">
+              <caret line="23" column="13" lean-forward="true" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -36,8 +34,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WebTerm/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="331">
-              <caret line="245" column="52" lean-forward="true" selection-start-line="245" selection-start-column="52" selection-end-line="245" selection-end-column="52" />
+            <state relative-caret-position="227">
+              <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -96,10 +94,10 @@
       <find>clearInterval</find>
       <find>timeout_sec</find>
       <find>clientIP</find>
-      <find>connected</find>
       <find>getDevices</find>
       <find>device_list</find>
       <find>Cookies</find>
+      <find>connected</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -118,8 +116,8 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/WebTerm/models.py" />
         <option value="$USER_HOME$/PycharmProjects/PythonAPITest/test.py" />
-        <option value="$PROJECT_DIR$/WebTerm/templates/index.html" />
         <option value="$PROJECT_DIR$/WebTerm/devices.py" />
+        <option value="$PROJECT_DIR$/WebTerm/templates/index.html" />
         <option value="$PROJECT_DIR$/WebTerm/views.py" />
       </list>
     </option>
@@ -290,12 +288,12 @@
       <workItem from="1560357745063" duration="12011000" />
       <workItem from="1561054377284" duration="6947000" />
       <workItem from="1563307993138" duration="26325000" />
-      <workItem from="1563923780026" duration="32020000" />
+      <workItem from="1563923780026" duration="34359000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="303408000" />
+    <option name="totallyTimeSpent" value="305747000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -553,17 +551,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/WebTerm/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="245" column="52" lean-forward="true" selection-start-line="245" selection-start-column="52" selection-end-line="245" selection-end-column="52" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/WebTerm/devices.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
@@ -574,10 +561,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/WebTerm/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/WebTerm/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1665">
-          <caret line="14" column="61" lean-forward="true" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
+        <state relative-caret-position="287">
+          <caret line="23" column="13" lean-forward="true" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>

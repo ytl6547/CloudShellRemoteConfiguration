@@ -12,6 +12,24 @@
         .first-row {position: absolute;top: 0; left: 0; right: 0; height: 120px;}
         .second-row {position: absolute; top: 120px; left: 0; right: 0; bottom: 0; }
         .second-row iframe {display: block; width: 100%; height: 100%; border: none;}
+        .green-dot {
+            height: 8px;
+            width: 8px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            background-color: lightgreen;
+            margin-right: 8px;
+        }
+        .red-dot {
+            height: 8px;
+            width: 8px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            background-color: red;
+            margin-right: 8px;
+        }
 
     </style>
 </head>
@@ -64,52 +82,6 @@
         var connected;
         var terminalPort;
         var failedTimes=0;
-        {#var onIframeReady = function ($i, successFn, errorFn) {#}
-        {#    try {#}
-        {#        const iCon = $i.first()[0].contentWindow,#}
-        {#            bl = "about:blank",#}
-        {#            compl = "complete";#}
-        {#        const callCallback = () => {#}
-        {#            try {#}
-        {#                const $con = $i.contents();#}
-        {#                if ($con.length === 0) { // https://git.io/vV8yU#}
-        {#                    throw new Error("iframe inaccessible");#}
-        {#                }#}
-        {#                successFn($con);#}
-        {#            } catch (e) { // accessing contents failed#}
-        {#                errorFn();#}
-        {#            }#}
-        {#        };#}
-        {#        const observeOnload = () => {#}
-        {#            $i.on("load.jqueryMark", () => {#}
-        {#                try {#}
-        {#                    const src = $i.attr("src").trim(),#}
-        {#                        href = iCon.location.href;#}
-        {#                    if (href !== bl || src === bl || src === "") {#}
-        {#                        $i.off("load.jqueryMark");#}
-        {#                        callCallback();#}
-        {#                    }#}
-        {#                } catch (e) {#}
-        {#                    errorFn();#}
-        {#                }#}
-        {#            });#}
-        {#        };#}
-        {#        if (iCon.document.readyState === compl) {#}
-        {#            const src = $i.attr("src").trim(),#}
-        {#                href = iCon.location.href;#}
-        {#            if (href === bl && src !== bl && src !== "") {#}
-        {#                observeOnload();#}
-        {#            } else {#}
-        {#                callCallback();#}
-        {#            }#}
-        {#        } else {#}
-        {#            observeOnload();#}
-        {#        }#}
-        {#    } catch (e) { // accessing contentWindow failed#}
-        {#        errorFn();#}
-        {#    }#}
-        {# };#}
-
 
         window.onunload = window.onbeforeunload = function(){
             if(connected){
@@ -130,30 +102,7 @@
                 document.getElementById("countdown").innerText="";
                 connected = false;
                 $("#disconnect").prop("disabled", true);
-                {#return;#}
             }
-            {#console.log(document.getElementById("terminal").contentWindow);#}
-            {#if($("#sub-frame-error-details").innerHTML.includes(" refused to connect.")){#}
-            {#    console.log(" refused to connect.");#}
-            {# }#}
-            {#setTimeout(function() {#}
-            {#    if (failedTimes < 3) {#}
-            {#        try {#}
-            {#            console.log(document.getElementById('terminal').contentWindow.location.href);#}
-            {#        } catch (e) {#}
-            {#            console.log(e);#}
-            {#            if (e instanceof DOMException) {#}
-            {#                document.getElementById('terminal').src = document.getElementById('terminal').src;#}
-            {#                failedTimes += 1;#}
-            {#                console.log("iframe failed times:", failedTimes);#}
-            {#                return;#}
-            {#            }#}
-            {#        }#}
-            {#    } else {#}
-            {#        console.log("iframe failed", failedTimes, "times, stopped attempting");#}
-            {#    }#}
-            {#    failedTimes = 0;#}
-            {# }, 5000);#}
         };
 
         function disconnect() {
@@ -210,12 +159,6 @@
                           document.getElementById("terminal").src = "http://" + document.domain + ":" + result.port;
                           document.getElementById("message").innerText=" Your session will expire after ";
                           $("#disconnect").prop("disabled", false);
-                          {#onIframeReady($("terminal"), function ($contents) {#}
-                          {#    console.log("Ready to got");#}
-                              {#console.log($contents.find("*"));#}
-                          {# }, function () {#}
-                          {#    console.log("Can not access iframe");#}
-                          {# });#}
                       }
                       startCountDown(result.lastAccessTime, result.timeoutSec);
                   }
@@ -234,11 +177,9 @@
         function getDevices() {
             console.log("Getting device list");
             connected = false;
-            {#document.getElementById("id").innerText = ConnectedDeviceName;#}
             $("#disconnect").prop("disabled", true);
             var source = new WebSocket("ws://" + window.location.host + "/ws/devices/");
             source.onmessage = function(event) {
-                {#console.log(event.data);#}
                 result = JSON.parse(event.data);
                 console.log(result);
                 if(result.success){
@@ -260,7 +201,12 @@
             document.getElementById("dropdown-content").innerHTML="";
             for(i=0; i<device_list.length; i++){
                 if(device_list[i].name.includes(document.getElementById("text-input").value)){
-                    document.getElementById("dropdown-content").innerHTML+="<a class=\"dropdown-item\" onclick=\"selectDevice('"+device_list[i].deviceId+"','"+device_list[i].name+"')\">"+device_list[i].name+" ("+device_list[i].connectionState.state+")"+"</a>";
+                    deviceStatus = "<span class=\"red-dot\"></span>";
+                    if(device_list[i].connectionState.state==="CONNECTED"){
+                        deviceStatus = "<span class=\"green-dot\"></span>";
+                    }
+
+                    document.getElementById("dropdown-content").innerHTML+="<a class=\"dropdown-item\" onclick=\"selectDevice('"+device_list[i].deviceId+"','"+device_list[i].name+"')\">"+deviceStatus+device_list[i].name+"</a>";
                 }
 
             }
@@ -288,9 +234,6 @@
               if (distance < 0) {
                 clearInterval(countdown);
                 document.getElementById("countdown").innerHTML = "EXPIRED";
-                {#connected = false;#}
-                {#$("#disconnect").prop("disabled", true);#}
-                {#  disconnect()#}
               }
 
               // Time calculations for hours, minutes and seconds
