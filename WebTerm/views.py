@@ -102,11 +102,12 @@ def terminal(request):
 
     DeviceId = request.GET.get('DeviceId', "")
 
-    # check whether device status is CONNECTED
+    # Fetching data from the DNAC failed
     deviceResult = getDevices()
     if not deviceResult["success"]:
         return JsonResponse(deviceResult)
 
+    # check whether the device is in the list of DNAC and device status is CONNECTED
     deviceInDNAC = False
     for device in deviceResult["deviceList"]:
         if device["deviceId"] == DeviceId:
