@@ -8,22 +8,20 @@ from datetime import datetime, timezone
 import requests
 import json
 
+# Please change the following constants according to your need
+LOGIN_API_URL = "https://172.23.165.132/api/system/v1/auth/login"
+CHECK_DEVICE_LIST_API_URL = "https://172.23.165.132/api/rdm/v1/device"
+CORRECT_USERNAME_FOR_DNAC_LOGIN = 'admin'
+CORRECT_PASSWORD_FOR_DNAC_LOGIN = 'Maglev123'
+DEVICE_USERNAME = "Cisco"
+DEVICE_PASSWORD = "Cisco"
+ACCESS_TIMEOUT_SECONDS = 1200
+
+# Don't change the variables below
 session = requests.Session()
 Cookies = {}
-# login_url = "https://172.27.250.16/api/system/v1/auth/login"
-# check_device_url = "https://172.27.250.16/api/rdm/v1/device"
-login_url = "https://172.23.165.132/api/system/v1/auth/login"
-check_device_url = "https://172.23.165.132/api/rdm/v1/device"
 username = ''
 password = ''
-CORRECT_USERNAME = 'admin'
-CORRECT_PASSWORD = 'Maglev123'
-
-devicePassword = "Cisco"
-deviceUsername = "Cisco"
-deviceIP = ""
-timeout_sec = 1200
-
 logged_in = False
 
 
@@ -52,9 +50,9 @@ def parse_dict_cookies(value):
 def loginToDNAC():
     global Cookies
     global logged_in
-    response = session.get(login_url, auth=(username, password), verify=False)
+    response = session.get(LOGIN_API_URL, auth=(username, password), verify=False)
     if response.status_code != 200:
-        response = session.get(login_url, auth=(CORRECT_USERNAME, CORRECT_PASSWORD), verify=False)
+        response = session.get(LOGIN_API_URL, auth=(CORRECT_USERNAME_FOR_DNAC_LOGIN, CORRECT_PASSWORD_FOR_DNAC_LOGIN), verify=False)
 
         Cookies = parse_dict_cookies(response.headers['Set-Cookie'])
         logged_in = False
@@ -69,10 +67,10 @@ def getDevices():
     if Cookies == {}:
         loginToDNAC()
 
-    r = session.get(check_device_url, cookies=Cookies, verify=False)
+    r = session.get(CHECK_DEVICE_LIST_API_URL, cookies=Cookies, verify=False)
     if r.status_code != 200:
         loginToDNAC()
-        r = session.get(check_device_url, cookies=Cookies, verify=False)
+        r = session.get(CHECK_DEVICE_LIST_API_URL, cookies=Cookies, verify=False)
     if r.status_code != 200:
         return {"success": False, "message": "Failed to get the device list from the DNAC API with status code " + str(r.status_code)}
     return {"success": True, "deviceList": json.loads(r.text)}
@@ -85,7 +83,7 @@ def login(request):
     return HttpResponse(loginToDNAC())
 
 
-def hostTerminal(command, device, port):
+def hostTerminal(command, device, port, deviceIP):
     print("Connecting to", deviceIP)
     # do it!
     subprocess.Popen(command, shell=True).wait()
@@ -96,7 +94,6 @@ def hostTerminal(command, device, port):
 
 
 def terminal(request):
-    global deviceIP
     if not logged_in:
         return JsonResponse({"success": False, "message": "Please login first!"})
 
@@ -108,6 +105,7 @@ def terminal(request):
         return JsonResponse(deviceResult)
 
     # check whether the device is in the list of DNAC and device status is CONNECTED
+    deviceIP = ""
     deviceInDNAC = False
     for device in deviceResult["deviceList"]:
         if device["deviceId"] == DeviceId:
@@ -123,7 +121,7 @@ def terminal(request):
     # Query the database to check availability
     try:
         d = Device.objects.get(id=DeviceId)
-        return JsonResponse({"success": True, "port": None, "lastAccessTime": d.lastAccessTime, "timeoutSec": timeout_sec})
+        return JsonResponse({"success": True, "port": None, "lastAccessTime": d.lastAccessTime, "timeoutSec": ACCESS_TIMEOUT_SECONDS})
     except Device.DoesNotExist:  # not accessed by any one
         d = Device(id=DeviceId)
 
@@ -132,10 +130,10 @@ def terminal(request):
     if port is False:
         return JsonResponse({"success": False, "message": "No available port. Please wait or add new ports."})
 
-    pre_entered_command = "sshpass -p " + devicePassword + " ssh -o \"StrictHostKeyChecking no\" " + deviceUsername + "@" + deviceIP
-    command = "timeout " + str(timeout_sec) + " ttyd -o -p " + port.originalPort + " " + pre_entered_command
+    pre_entered_command = "sshpass -p " + DEVICE_PASSWORD + " ssh -o \"StrictHostKeyChecking no\" " + DEVICE_USERNAME + "@" + deviceIP
+    command = "timeout " + str(ACCESS_TIMEOUT_SECONDS) + " ttyd -o -p " + port.originalPort + " " + pre_entered_command
 
-    t = Thread(target=hostTerminal, args=(command, d, port,))
+    t = Thread(target=hostTerminal, args=(command, d, port, deviceIP, ))
 
     # mark as unavailable
     port.available = False
@@ -147,7 +145,7 @@ def terminal(request):
     t.start()
     d.save()
     port.save()
-    return JsonResponse({"success": True, "port": port.transferedPort, "lastAccessTime": d.lastAccessTime, "timeoutSec": timeout_sec})
+    return JsonResponse({"success": True, "port": port.transferedPort, "lastAccessTime": d.lastAccessTime, "timeoutSec": ACCESS_TIMEOUT_SECONDS})
 
 
 class HomePageView(TemplateView):

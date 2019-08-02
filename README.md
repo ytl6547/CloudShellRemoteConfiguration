@@ -86,33 +86,65 @@ Cloud Shell Remote Configuration is a web application to remotely configure Cisc
     
     unset HTTPS_PROXY
     unset HTTP_PROXY
-### Start the web server
     cd CloudShellRemoteConfiguration/
+### Change constants
+Default constants:
+
+    LOGIN_API_URL = "https://172.23.165.132/api/system/v1/auth/login"
+    CHECK_DEVICE_LIST_API_URL = "https://172.23.165.132/api/rdm/v1/device"
+    CORRECT_USERNAME_FOR_DNAC_LOGIN = 'admin'
+    CORRECT_PASSWORD_FOR_DNAC_LOGIN = 'Maglev123'
+    DEVICE_USERNAME = "Cisco"
+    DEVICE_PASSWORD = "Cisco"
+    ACCESS_TIMEOUT_SECONDS = 1200
+
+If you want to change any of them:
+    
+    apt-get install nano
+    nano WebTerm/views.py
+
+### Start the web server
     # Use the original port number for web server here, which is 20000 in this case
     python3 manage.py runserver 0.0.0.0:20000 &
 ### Tell the database your port mappings
 1. Open in browser with `http://<DNAC IP>:<transferred port number for web server>/admin/WebTerm/port/`, e.g., http://172.23.165.132:8029/admin/WebTerm/port/
-
-2. username: admin password: Maglev123
-
-3. Click add port on the right
-
-4. Add your original -> transferred mapping one by one, keep "available" being checked, and don't forget to save
+2. username: admin, password: Maglev123
+3. Delete all unrelated mappings
+4. Click add port on the right
+5. Add your original -> transferred terminal sharing mappings one by one, keep "available" being checked, and don't forget to save
 ### Go to the website
 Go to `http://<DNAC IP>:<transferred port number for web server>`, e.g., http://172.23.165.132:8029/
 
 And feel free to use your shared terminal :)
-## Future Usage if the web server stops running
-1. SSH to maglev cluster
-2. Get into the Docker container
+## Future Usage 
+### Web server stopped running
+1. [SSH to maglev cluster][3]
+2. [Get into the Docker container][4]
 3. Start the server 
     ```
     cd CloudShell/
     . env/bin/activate
     cd CloudShellRemoteConfiguration/
-    python3 manage.py runserver 0.0.0.0:<original port number for web server>
+    # Use the original port number for web server here, which is 20000 in this case
+    python3 manage.py runserver 0.0.0.0:20000 &
     ```
-4. Go to the website
+4. [Go to the website][5]
+### Pull updates
+1. [SSH to maglev cluster][3]
+2. [Get into the Docker container][4]
+3. Remove folder and run again
+    ```
+    cd CloudShell/
+    . env/bin/activate
+    rm -r CloudShellRemoteConfiguration/
+    export HTTPS_PROXY="https://proxy.esl.cisco.com:80"
+    git clone https://github.com/ytl6547/CloudShellRemoteConfiguration.git
+    unset HTTPS_PROXY
+    cd CloudShellRemoteConfiguration/
+    # Use the original port number for web server here, which is 20000 in this case
+    python3 manage.py runserver 0.0.0.0:20000 &
+    ```
+4. [Go to the website][5]
 
 # Functionalities
 1. Login
@@ -150,3 +182,6 @@ Modern browsers, See [Browser Support][2].
 
   [1]: https://github.com/tsl0922/ttyd
   [2]: https://github.com/xtermjs/xterm.js#browser-support  
+  [3]: https://github.com/ytl6547/CloudShellRemoteConfiguration#ssh-to-maglev-cluster
+  [4]: https://github.com/ytl6547/CloudShellRemoteConfiguration#get-into-the-docker-container
+  [5]: https://github.com/ytl6547/CloudShellRemoteConfiguration#go-to-the-website

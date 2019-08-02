@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="29bcb2b7-fc11-4e46-8b09-fa9905db758b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebTerm/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebTerm/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,8 +22,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WebTerm/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="128" lean-forward="true" selection-start-line="128" selection-end-line="128" />
+            <state relative-caret-position="151">
+              <caret line="11" selection-start-line="11" selection-end-line="17" selection-end-column="29" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -37,8 +35,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="315">
-                <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
+              <first_editor relative-caret-position="353">
+                <caret line="139" column="44" selection-start-line="139" selection-start-column="44" selection-end-line="139" selection-end-column="44" />
               </first_editor>
               <second_editor />
             </state>
@@ -90,7 +88,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>install</find>
       <find>get_open_port</find>
       <find>prepareTerminal</find>
       <find>transferedPrt</find>
@@ -100,7 +97,6 @@
       <find>disconnect</find>
       <find>console</find>
       <find>terminalOnLoad</find>
-      <find>loginToDNAC</find>
       <find>displ</find>
       <find>&quot;disconnect&quot;</find>
       <find>print</find>
@@ -117,9 +113,11 @@
       <find>Cookies</find>
       <find>connected</find>
       <find>filter</find>
-      <find>deviceIP</find>
       <find>CORRECT_USERNAME</find>
       <find>transfered</find>
+      <find>deviceIP</find>
+      <find>username</find>
+      <find>loginToDNAC</find>
     </findStrings>
     <replaceStrings>
       <replace>transferred</replace>
@@ -317,12 +315,12 @@
       <workItem from="1564683979364" duration="1454000" />
       <workItem from="1564717348624" duration="2249000" />
       <workItem from="1564725186360" duration="12000" />
-      <workItem from="1564725280543" duration="3681000" />
+      <workItem from="1564725280543" duration="7125000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="321250000" />
+    <option name="totallyTimeSpent" value="324694000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -589,8 +587,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WebTerm/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="128" lean-forward="true" selection-start-line="128" selection-end-line="128" />
+        <state relative-caret-position="151">
+          <caret line="11" selection-start-line="11" selection-end-line="17" selection-end-column="29" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
@@ -600,8 +598,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="315">
-            <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
+          <first_editor relative-caret-position="353">
+            <caret line="139" column="44" selection-start-line="139" selection-start-column="44" selection-end-line="139" selection-end-column="44" />
           </first_editor>
           <second_editor />
         </state>
