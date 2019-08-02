@@ -19,9 +19,9 @@ password = ''
 CORRECT_USERNAME = 'admin'
 CORRECT_PASSWORD = 'Maglev123'
 
-clientPassword = "Cisco"
-clientUsername = "Cisco"
-clientIP = ""
+devicePassword = "Cisco"
+deviceUsername = "Cisco"
+deviceIP = ""
 timeout_sec = 1200
 
 logged_in = False
@@ -86,17 +86,17 @@ def login(request):
 
 
 def hostTerminal(command, device, port):
-    print("Connecting to", clientIP)
+    print("Connecting to", deviceIP)
     # do it!
     subprocess.Popen(command, shell=True).wait()
-    print("Disconnected from", clientIP)
+    print("Disconnected from", deviceIP)
     device.delete()
     port.available = True
     port.save()
 
 
 def terminal(request):
-    global clientIP
+    global deviceIP
     if not logged_in:
         return JsonResponse({"success": False, "message": "Please login first!"})
 
@@ -113,7 +113,7 @@ def terminal(request):
         if device["deviceId"] == DeviceId:
             if device["connectionState"]["state"] != "CONNECTED":
                 return JsonResponse({"success": False, "message": "This device is not ready to use."})
-            clientIP = device["ipAddr"]
+            deviceIP = device["ipAddr"]
             deviceInDNAC = True
             break
 
@@ -130,9 +130,9 @@ def terminal(request):
     # prepare commands and ports
     port = get_open_port()
     if port is False:
-        return JsonResponse({"success": False, "message": "No available ports. Please wait or add new ports."})
+        return JsonResponse({"success": False, "message": "No available port. Please wait or add new ports."})
 
-    pre_entered_command = "sshpass -p " + clientPassword + " ssh -o \"StrictHostKeyChecking no\" " + clientUsername + "@" + clientIP
+    pre_entered_command = "sshpass -p " + devicePassword + " ssh -o \"StrictHostKeyChecking no\" " + deviceUsername + "@" + deviceIP
     command = "timeout " + str(timeout_sec) + " ttyd -o -p " + port.originalPort + " " + pre_entered_command
 
     t = Thread(target=hostTerminal, args=(command, d, port,))
