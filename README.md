@@ -106,7 +106,7 @@ If you want to change any of them:
 ### Start the web server
     # Use the original port number for web server here, which is 20000 in this case
     python3 manage.py runserver 0.0.0.0:20000 &
-### Tell the database your port mappings
+### Tell the database your terminal sharing port mappings
 1. Open in browser with `http://<DNAC IP>:<transferred port number for web server>/admin/WebTerm/port/`, e.g., http://172.23.165.132:8029/admin/WebTerm/port/
 2. username: admin, password: Maglev123
 3. Delete all unrelated mappings
@@ -125,10 +125,9 @@ And feel free to use your shared terminal :)
     cd CloudShell/
     . env/bin/activate
     cd CloudShellRemoteConfiguration/
-    # Use the original port number for web server here, which is 20000 in this case
-    python3 manage.py runserver 0.0.0.0:20000 &
     ```
-4. [Go to the website][5]
+4. [Start the web server][8]
+5. [Go to the website][5]
 ### Pull updates
 1. [SSH to maglev cluster][3]
 2. [Get into the Docker container][4]
@@ -141,10 +140,11 @@ And feel free to use your shared terminal :)
     git clone https://github.com/ytl6547/CloudShellRemoteConfiguration.git
     unset HTTPS_PROXY
     cd CloudShellRemoteConfiguration/
-    # Use the original port number for web server here, which is 20000 in this case
-    python3 manage.py runserver 0.0.0.0:20000 &
     ```
-4. [Go to the website][5]
+4. [Change constants][6]
+5. [Start the web server][8]
+6. [Tell the database your terminal sharing port mappings][7]
+7. [Go to the website][5]
 
 # Functionalities
 1. Login
@@ -185,3 +185,6 @@ Modern browsers, See [Browser Support][2].
   [3]: https://github.com/ytl6547/CloudShellRemoteConfiguration#ssh-to-maglev-cluster
   [4]: https://github.com/ytl6547/CloudShellRemoteConfiguration#get-into-the-docker-container
   [5]: https://github.com/ytl6547/CloudShellRemoteConfiguration#go-to-the-website
+  [6]: https://github.com/ytl6547/CloudShellRemoteConfiguration#change-constants
+  [7]: https://github.com/ytl6547/CloudShellRemoteConfiguration#tell-the-database-your-terminal-sharing-port-mappings
+  [8]: https://github.com/ytl6547/CloudShellRemoteConfiguration#start-the-web-server
